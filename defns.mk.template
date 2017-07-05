@@ -43,6 +43,17 @@ PETUUM_CXXFLAGS = -O3 \
 
 PETUUM_INCFLAGS = -I$(PETUUM_SRC) -I$(PETUUM_THIRD_PARTY_INCLUDE)
 PETUUM_INCFLAGS += $(HDFS_INCFLAGS) ${HAS_HDFS}
+
+ifdef CENTOS7
+  $(info Make configuration for CentOS7.)
+  PREINSTALLED_EIGEN=true
+endif
+
+ifdef PREINSTALLED_EIGEN
+  $(info Params for preinstalled eigen3.)
+  PETUUM_INCFLAGS += -I/usr/include/eigen3
+endif
+
 PETUUM_LDFLAGS = -Wl,-rpath,$(PETUUM_THIRD_PARTY_LIB) \
           -L$(PETUUM_THIRD_PARTY_LIB) \
           -pthread -lrt -lnsl \
