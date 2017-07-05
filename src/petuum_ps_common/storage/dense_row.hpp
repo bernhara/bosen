@@ -88,7 +88,9 @@ namespace petuum {
   };
 
   template<typename V>
-  DenseRow<V>::DenseRow() { }
+  DenseRow<V>::DenseRow()
+    : data(0)
+  { }
 
   template<typename V>
   DenseRow<V>::~DenseRow() { }
@@ -106,8 +108,6 @@ namespace petuum {
   AbstractRow *DenseRow<V>::Clone() const {
     std::unique_lock<std::mutex> lock(mtx_);
     DenseRow<V> *new_row = new DenseRow<V>();
-    // !!! new_row->Init(capacity_);
-    // !!! memcpy(new_row->data_.data(), data_.data(), capacity_*sizeof(V));
     new_row->data_ = data_;
 
     //VLOG(0) << "Cloned, capacity_ = " << new_row->capacity_;
@@ -122,7 +122,6 @@ namespace petuum {
   template<typename V>
   size_t DenseRow<V>::Serialize(void *bytes) const {
     size_t num_bytes = SerializedSize();
-    // !!! memcpy(bytes, data_.data(), num_bytes);
     V* const v_bytes = reinterpret_cast<V*>(bytes);
     for (int32_t i=0; i<get_capacity(); i++) {
       v_bytes[i] = data_[i];
@@ -135,7 +134,6 @@ namespace petuum {
   bool DenseRow<V>::Deserialize(const void *data, size_t num_bytes) {
     int32_t vec_size = num_bytes/sizeof(V);
     data_.resize(vec_size);
-    // !!! memcpy(data_.data(), data, num_bytes);
     const V* const v_data = reinterpret_cast<const V*>(data);
     for (int32_t i=0; i<vec_size; i++) {
       data_[i] = v_data[i];
@@ -147,7 +145,6 @@ namespace petuum {
   void DenseRow<V>::ResetRowData(const void *data, size_t num_bytes) {
     int32_t vec_size = num_bytes/sizeof(V);
     CHECK_EQ(get_capacity(), vec_size);
-    // !! memcpy(data_.data(), data, num_bytes);
     const V* v_data = reinterpret_cast<const V*>(data);
     for (int32_t i=0; i<get_capacity(); i++) {
       data_[i] = v_data[i];
@@ -294,8 +291,6 @@ namespace petuum {
   void DenseRow<V>::CopyToVector(std::vector<V> *to) const {
     std::unique_lock<std::mutex> lock(mtx_);
     //CHECK_EQ(to->size(), data_.size());
-    // !!! to->resize(data_.size());
-    // !!! std::copy(data_.begin(), data_.end(), to->begin());
     *to = data_;
   }
 
