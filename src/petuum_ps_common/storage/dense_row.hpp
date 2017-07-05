@@ -45,33 +45,39 @@ namespace petuum {
     void ApplyBatchInc(const int32_t *column_ids,
 		       const void* update_batch, int32_t num_updates);
 
+  private:
     void ApplyIncUnsafe(int32_t column_id, const void *update);
 
     void ApplyBatchIncUnsafe(const int32_t *column_ids,
 			     const void* update_batch, int32_t num_updates);
 
+  public:
     double ApplyIncGetImportance(int32_t column_id, const void *update);
 
     double ApplyBatchIncGetImportance(const int32_t *column_ids,
 				      const void* update_batch, int32_t num_updates);
 
+  private:
     double ApplyIncUnsafeGetImportance(int32_t column_id, const void *update);
 
     double ApplyBatchIncUnsafeGetImportance(const int32_t *column_ids,
 					    const void* update_batch, int32_t num_updates);
 
+  public:
     double ApplyDenseBatchIncGetImportance(
 					   const void* update_batch, int32_t index_st, int32_t num_updates);
 
     void ApplyDenseBatchInc(
 			    const void* update_batch, int32_t index_st, int32_t num_updates);
 
+  private:
     double ApplyDenseBatchIncUnsafeGetImportance(
 						 const void* update_batch, int32_t index_st, int32_t num_updates);
 
     void ApplyDenseBatchIncUnsafe(
 				  const void* update_batch, int32_t index_st, int32_t num_updates);
 
+  public:
     // Thread-safe.
     V operator [](int32_t column_id) const;
     int32_t get_capacity() const;
@@ -89,7 +95,7 @@ namespace petuum {
 
   template<typename V>
   DenseRow<V>::DenseRow()
-    : data(0)
+    : data_(0)
   { }
 
   template<typename V>
