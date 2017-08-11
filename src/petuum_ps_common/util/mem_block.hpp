@@ -9,7 +9,13 @@
 
 namespace petuum {
 
+<<<<<<< HEAD
 /*
+=======
+  typedef long double type_to_use_to_force_alignment;
+
+/**
+>>>>>>> 7123ffd... Apply memory alignment logic to message management
  * A thin layer to manage a chunk of contiguous memory which may be allocated 
  * outside (via MemAlloc) or inside (via Alloc) the class.
  * This class is meant to be simple (cheap) so it does not chech any assumption
@@ -95,11 +101,13 @@ private:
      * freed. Once a memory chunk is give to MemBlock, it cannot be freed 
      * externally.
      */
-    void Reset(void *mem){
+    void Reset(void * mem){
       if(mem_ != 0){
 	MemFree(mem_);
       }
+
       mem_ = reinterpret_cast<uint8_t*>(mem);
+
     }
 
     /**
@@ -130,9 +138,9 @@ private:
 
       /**
        * This method is called to allocate memory for multiple type instances.
-       * Memory must be allocated to comply memory alignment constaints, which are type specific:
-       * simply allocation memory as "an amount of char or bytes" may lead to returned address
-       * that cannot point to an int or float for example.
+       * Memory must be allocated to comply memory alignment constaints.
+       * These constraints are type specific: simply allocation memory as "an amount of char or bytes"
+       * may lead to returned address that cannot point to an int or float for example.
        *
        * Since we don't know what will be pointed to by the allocated memory,
        * we take a *pessimistic* approach by allocating a pointer that can point to any kind of type,
@@ -142,21 +150,22 @@ private:
        *        so that the right size is allocated
        */
 
-      const int32_t & size_of_the_largest_type = sizeof(long double);
-      const int32_t nb_elems_of_the_largest_type_needed_to_hold_the_requested_size = (nbytes / size_of_the_largest_type) + 1;
+      const int32_t nb_elems_of_alignment_type_needed_to_hold_the_requested_size = \
+	(nbytes / sizeof(type_to_use_to_force_alignment)) + 1;
 
       /**
        * Allocation this oversized amount of space as "long double" so that the returned pointer
        * is alligned to an address which is valid when used to point to any kind of pointed object type
        *
        */
-      long double * const pointer_to_space = new long double[nb_elems_of_the_largest_type_needed_to_hold_the_requested_size];
+      type_to_use_to_force_alignment * const pointer_to_space_aligned =	\
+	new type_to_use_to_force_alignment[nb_elems_of_alignment_type_needed_to_hold_the_requested_size];
 
       /**
        * Cast the allocated pointer to the expected type, *without changing it's value*
        */
 
-      uint8_t * const & mem = reinterpret_cast<uint8_t*>(pointer_to_space);
+      uint8_t * const & mem = reinterpret_cast<uint8_t*>(pointer_to_space_aligned);
 
       return mem;
     }
