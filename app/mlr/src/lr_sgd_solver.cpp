@@ -144,8 +144,6 @@ void LRSGDSolver::RefreshParams() {
 }
 
 void LRSGDSolver::SaveWeights(const std::string& filename) const {
-  LOG(ERROR) << "SaveWeights is not implemented for binary LR.";
-
   petuum::io::ofstream w_stream(filename,
 				std::ofstream::out | std::ofstream::trunc);
   CHECK(w_stream);
