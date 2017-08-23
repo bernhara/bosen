@@ -11,6 +11,7 @@
 #include <ml/include/ml.hpp>
 #include <ml/util/fastapprox/fastapprox.hpp>
 #include <utility>
+#include <io/general_fstream.hpp>
 
 
 namespace mlr {
@@ -144,6 +145,38 @@ void LRSGDSolver::RefreshParams() {
 
 void LRSGDSolver::SaveWeights(const std::string& filename) const {
   LOG(ERROR) << "SaveWeights is not implemented for binary LR.";
+
+  petuum::io::ofstream w_stream(filename,
+				std::ofstream::out | std::ofstream::trunc);
+  CHECK(w_stream);
+  // Print meta data
+  w_stream << "num_labels: 1" << std::endl;
+  w_stream << "feature_dim: " << feature_dim_ << std::endl;
+
+  int num_entries = w_cache_.GetNumEntries();
+  for (int j = 0; j < num_entries; ++j) {
+    int feature_id = w_cache_.GetFeatureId(j);
+    float feature_val = w_cache_.GetFeatureVal(j);
+    w_stream << feature_id << ":" << feature_val << " ";
+  }
+  w_stream << std::endl;
+
+
+  /*
+  for (int i = 0; i < num_labels_; ++i) {
+    int num_entries = w_cache_[i].GetNumEntries();
+    for (int j = 0; j < num_entries; ++j) {
+      int feature_id = w_cache_[i].GetFeatureId(j);
+      float feature_val = w_cache_[i].GetFeatureVal(j);
+      w_stream << feature_id << ":" << feature_val << " ";
+    }
+    w_stream << std::endl;
+  }
+  */
+
+  w_stream.close();
+  LOG(INFO) << "Saved weight to " << filename;
+
 }
 
 // 1/2 * lambda * ||w||^2
