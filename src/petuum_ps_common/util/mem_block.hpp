@@ -6,16 +6,20 @@
 #include <stdint.h>
 #include <glog/logging.h>
 #include <boost/noncopyable.hpp>
+#include <cstddef>
+
 
 namespace petuum {
 
-<<<<<<< HEAD
-/*
-=======
-  typedef long double type_to_use_to_force_alignment;
+  // TODO: MAX_ALIGN_T macros current never defined
+  //        should be computed on compiler and machine caharacteristics
+#ifdef MAX_ALIGN_T
+  typedef std::max_align_t max_alignment_type;
+#else
+  typedef long double max_alignment_type; // worst case
+#endif
 
 /**
->>>>>>> 7123ffd... Apply memory alignment logic to message management
  * A thin layer to manage a chunk of contiguous memory which may be allocated 
  * outside (via MemAlloc) or inside (via Alloc) the class.
  * This class is meant to be simple (cheap) so it does not chech any assumption
@@ -24,66 +28,6 @@ namespace petuum {
  * is undefined.
  */
 
-<<<<<<< HEAD
-class MemBlock : boost::noncopyable {
-public:
-
-  MemBlock():
-    mem_(0) { }
-
-  ~MemBlock(){
-    Reset(0);
-  }
-
-  /*
-   * Reset the MemBlock object to manage a particular memory chunk of certain 
-   * size. If there is a previous memory chunk managed by this object, it is
-   * freed. Once a memory chunk is give to MemBlock, it cannot be freed 
-   * externally.
-   */
-  void Reset(void *mem){
-    if(mem_ != 0){
-      MemFree(mem_);
-    }
-    mem_ = reinterpret_cast<uint8_t*>(mem);
-  }
-
-  /*
-   * Release the control over the memory chunk without destroying it.
-   */
-  uint8_t *Release(){
-    uint8_t *mem = mem_;
-    mem_ = 0;
-    return mem;
-  }
-
-  /*
-   * Get a pointer to access to the underlying memory managed by this MemBlock.
-   */
-  uint8_t *get_mem(){
-    return mem_;
-  }
-
-  /*
-   * Allocate a chunk of memory based on the size information. Must be invoked 
-   * when there's no memory managed by this MemBlock object yet.
-   */
-  void Alloc(int32_t size){
-    mem_ = MemAlloc(size);
-  }
-
-  static inline uint8_t *MemAlloc(int32_t nbytes){
-    uint8_t *mem = new uint8_t[nbytes];
-    return mem;
-  }
-
-  static inline void MemFree(uint8_t *mem){
-    delete[] mem;
-  }
-
-private:
-  uint8_t *mem_;
-=======
   class MemBlock : boost::noncopyable {
   public:
 
@@ -93,7 +37,6 @@ private:
     ~MemBlock(){
       Reset(0);
     }
->>>>>>> d31d173... Correct a memory allocation bug which leads to an alignment problem.
 
     /**
      * Reset the MemBlock object to manage a particular memory chunk of certain 
@@ -151,15 +94,15 @@ private:
        */
 
       const int32_t nb_elems_of_alignment_type_needed_to_hold_the_requested_size = \
-	(nbytes / sizeof(type_to_use_to_force_alignment)) + 1;
+	(nbytes / sizeof(max_alignment_type)) + 1;
 
       /**
        * Allocation this oversized amount of space as "long double" so that the returned pointer
        * is alligned to an address which is valid when used to point to any kind of pointed object type
        *
        */
-      type_to_use_to_force_alignment * const pointer_to_space_aligned =	\
-	new type_to_use_to_force_alignment[nb_elems_of_alignment_type_needed_to_hold_the_requested_size];
+      max_alignment_type* const pointer_to_space_aligned = \
+	new max_alignment_type[nb_elems_of_alignment_type_needed_to_hold_the_requested_size];
 
       /**
        * Cast the allocated pointer to the expected type, *without changing it's value*
