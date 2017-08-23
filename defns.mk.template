@@ -1,4 +1,5 @@
 # Requires PETUUM_ROOT to be defined
+# -*- Makefile -*-
 
 # Modify system dependent parameters for each environment:
 JAVA_HOME = /usr/lib/jvm/java-7-openjdk-amd64
@@ -18,7 +19,7 @@ ifdef HAS_HDFS
   HDFS_INCFLAGS = -I${HADOOP_HOME}/include
 else
   $(info Hadoop is disabled)
-	HDFS_LDFLAGS =
+  HDFS_LDFLAGS =
   HDFS_INCFLAGS =
 endif
 
@@ -31,18 +32,32 @@ PETUUM_THIRD_PARTY_LIB = $(PETUUM_THIRD_PARTY)/lib
 PETUUM_THIRD_PARTY_BIN = $(PETUUM_THIRD_PARTY)/bin
 
 PETUUM_CXX = g++
-PETUUM_CXXFLAGS = -O3 \
-           -std=c++11 \
-           -Wall \
-	   -Wno-sign-compare \
-           -fno-builtin-malloc \
-           -fno-builtin-calloc \
-           -fno-builtin-realloc \
-           -fno-builtin-free \
-           -fno-omit-frame-pointer
+PETUUM_CXXFLAGS = \
+	-O3 \
+	-std=c++11 \
+	-Wall \
+	-Wno-sign-compare \
+	-fno-omit-frame-pointer
 
-PETUUM_INCFLAGS = -I$(PETUUM_SRC) -I$(PETUUM_THIRD_PARTY_INCLUDE)
+#
+#
+# Build PETUUM_INCFLAGS
+# =====================
+#
+
+PETUUM_INCFLAGS =
+
+ifdef SKIP_SYSTEM_EIGEN
+   $(info Prefer provided Eigen)
+else
+   $(info Use Eigen provided by the system)
+   PETUUM_INCFLAGS += -I/usr/include/eigen3
+endif
+
+PETUUM_INCFLAGS += -I$(PETUUM_SRC) -I$(PETUUM_THIRD_PARTY_INCLUDE)
 PETUUM_INCFLAGS += $(HDFS_INCFLAGS) ${HAS_HDFS}
+
+
 PETUUM_LDFLAGS = -Wl,-rpath,$(PETUUM_THIRD_PARTY_LIB) \
           -L$(PETUUM_THIRD_PARTY_LIB) \
           -pthread -lrt -lnsl \
@@ -51,14 +66,29 @@ PETUUM_LDFLAGS = -Wl,-rpath,$(PETUUM_THIRD_PARTY_LIB) \
           -lboost_system \
           -lglog \
           -lgflags \
-          -ltcmalloc \
           -lconfig++ \
           -lsnappy \
           -lboost_system \
           -lboost_thread \
 	  -lyaml-cpp \
 	  -lleveldb
+
 PETUUM_LDFLAGS += $(HDFS_LDFLAGS)
+
+ifdef USE_GPERFTOOLS
+   $(info Use Gperftools in place of std malloc)
+   PETUUM_CXXFLAGS += \
+           -fno-builtin-malloc \
+           -fno-builtin-calloc \
+           -fno-builtin-realloc \
+           -fno-builtin-free
+
+   PETUUM_LDFLAGS += \
+          -ltcmalloc
+else
+   $(info Use std malloc)
+endif
+
 
 PETUUM_PS_LIB = $(PETUUM_LIB)/libpetuum-ps.a
 PETUUM_PS_SN_LIB = $(PETUUM_LIB)/libpetuum-ps-sn.a
