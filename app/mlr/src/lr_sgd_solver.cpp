@@ -9,7 +9,6 @@
 #include <fstream>
 #include <petuum_ps_common/include/petuum_ps.hpp>
 #include <ml/include/ml.hpp>
-#include <ml/util/fastapprox/fastapprox.hpp>
 #include <utility>
 #include <io/general_fstream.hpp>
 
