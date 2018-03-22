@@ -22,6 +22,7 @@ cp \
 cp \
     "${HERE}/trainWorker.sh" \
     "${HERE}/trainWorker.sh-config" \
+    "${HERE}/testit.sh" \
     "${tmp_root}/home/dip/bin"
 
 
