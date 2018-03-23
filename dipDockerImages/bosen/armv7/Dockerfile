@@ -10,6 +10,8 @@ COPY tmp_root /
 RUN test -z "$skip_apt" && apt-get update
 
 RUN test -z "$skip_apt" && apt-get install -y apt-utils
+RUN test -z "$skip_apt" && apt-get install -y iputils-ping
+RUN test -z "$skip_apt" && apt-get install -y telnet
 
 RUN test -z "$skip_apt" && apt-get install -y libgcc1
 RUN test -z "$skip_apt" && apt-get install -y libc6
