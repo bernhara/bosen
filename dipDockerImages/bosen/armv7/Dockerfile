@@ -12,26 +12,20 @@ RUN test -z "$skip_apt" && apt-get update
 RUN test -z "$skip_apt" && apt-get install -y apt-utils
 
 RUN test -z "$skip_apt" && apt-get install -y \
-    iputils-ping \
-    net-tools \
-    telnet \
-    netcat \
-    traceroute
-
-RUN test -z "$skip_apt" && apt-get install -y libgcc1
-RUN test -z "$skip_apt" && apt-get install -y libc6
-RUN test -z "$skip_apt" && apt-get install -y libzmq5
-#!! RUN test -z "$skip_apt" && apt-get install -y libboost-thread1
-RUN test -z "$skip_apt" && apt-get install -y libgoogle-glog0v5
-RUN test -z "$skip_apt" && apt-get install -y libgflags2v5
-RUN test -z "$skip_apt" && apt-get install -y libconfig++9v5
-
-RUN test -z "$skip_apt" && apt-get install -y libsnappy1v5
-RUN test -z "$skip_apt" && apt-get install -y libyaml-cpp0.5v5
-RUN test -z "$skip_apt" && apt-get install -y libleveldb1v5
-
-RUN test -z "$skip_apt" && apt-get install -y libboost-system1.62.0
-RUN test -z "$skip_apt" && apt-get install -y libboost-thread1.62.0
+    libgcc1 \
+    libc6 \
+    libzmq5 \
+    libgoogle-glog0v5 \
+    libgflags2v5 \
+    libconfig++9v5 \
+    \
+    libsnappy1v5 \
+    libyaml-cpp0.5v5 \
+    libleveldb1v5 \
+    \
+    libboost-thread1.62.0 \
+    libboost-system1.62.0 \
+    libboost-thread1.62.0
 
 RUN test -z "$skip_apt" && apt-get install -y \
     iputils-ping \
