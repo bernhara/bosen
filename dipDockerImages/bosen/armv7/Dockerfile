@@ -10,8 +10,13 @@ COPY tmp_root /
 RUN test -z "$skip_apt" && apt-get update
 
 RUN test -z "$skip_apt" && apt-get install -y apt-utils
-RUN test -z "$skip_apt" && apt-get install -y iputils-ping
-RUN test -z "$skip_apt" && apt-get install -y telnet
+
+RUN test -z "$skip_apt" && apt-get install -y \
+    iputils-ping \
+    net-tools \
+    telnet \
+    netcat \
+    traceroute
 
 RUN test -z "$skip_apt" && apt-get install -y libgcc1
 RUN test -z "$skip_apt" && apt-get install -y libc6
@@ -28,6 +33,12 @@ RUN test -z "$skip_apt" && apt-get install -y libleveldb1v5
 RUN test -z "$skip_apt" && apt-get install -y libboost-system1.62.0
 RUN test -z "$skip_apt" && apt-get install -y libboost-thread1.62.0
 
+RUN test -z "$skip_apt" && apt-get install -y \
+    iputils-ping \
+    net-tools \
+    telnet \
+    netcat \
+    traceroute
 
 RUN rm -rf /tmp/*
 RUN rm /core
