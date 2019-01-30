@@ -1,3 +1,5 @@
+# -*- mode: indented-text -*-
+
 FROM resin/rpi-raspbian:stretch
 
 LABEL maintainer="BERNHARD Raphael <raphael.bernhard@orange.com>"
@@ -7,9 +9,29 @@ ENV https_proxy=${https_proxy}
 
 COPY tmp_root /
 
-RUN test -z "$skip_apt" && apt-get update
+RUN test -z "$skip_apt" \
+    && apt-get update \
+    && apt-get -y \
+       	    apt-utils \
+            libgcc1 \
+	    libc6 \
+	    libzmq5 \
+	    libgoogle-glog0v5 \
+	    libgflags2v5 \
+	    libconfig++9v5 \
+	    \
+	    libsnappy1v5 \
+	    libyaml-cpp0.5v5 \
+	    libleveldb1v5 \
+	    \
+	    libboost-system1.62.0 \
+	    libboost-thread1.62.0 \
+     &&	apt-get clean
 
-RUN test -z "$skip_apt" && apt-get install -y apt-utils
+
+#!! RUN test -z "$skip_apt" && apt-get install -y libboost-thread1
+
+
 
 RUN test -z "$skip_apt" && apt-get install -y libgcc1
 RUN test -z "$skip_apt" && apt-get install -y libc6
