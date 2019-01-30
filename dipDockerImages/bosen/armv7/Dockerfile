@@ -1,6 +1,6 @@
 # -*- mode: indented-text -*-
 
-FROM resin/rpi-raspbian:stretch
+FROM raspbian/stretch:latest
 
 LABEL maintainer="BERNHARD Raphael <raphael.bernhard@orange.com>"
 
@@ -11,8 +11,7 @@ COPY tmp_root /
 
 RUN test -z "$skip_apt" \
     && apt-get update \
-    && apt-get -y \
-       	    apt-utils \
+    && apt-get install -y \
             libgcc1 \
 	    libc6 \
 	    libzmq5 \
@@ -33,7 +32,7 @@ RUN test -z "$skip_apt" \
 
 #ENTRYPOINT ["/build.sh"]
 
-
+#       	    apt-utils \
 
 
 #!! linux-vdso.so.1 (0x7edea000)
