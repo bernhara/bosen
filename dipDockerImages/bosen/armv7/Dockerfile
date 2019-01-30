@@ -26,33 +26,10 @@ RUN test -z "$skip_apt" \
 	    \
 	    libboost-system1.62.0 \
 	    libboost-thread1.62.0 \
-     &&	apt-get clean
+     &&	apt-get clean \
+     && rm -rf /tmp/* \
+     && rm -f /core
 
-
-#!! RUN test -z "$skip_apt" && apt-get install -y libboost-thread1
-
-
-
-RUN test -z "$skip_apt" && apt-get install -y libgcc1
-RUN test -z "$skip_apt" && apt-get install -y libc6
-RUN test -z "$skip_apt" && apt-get install -y libzmq5
-#!! RUN test -z "$skip_apt" && apt-get install -y libboost-thread1
-RUN test -z "$skip_apt" && apt-get install -y libgoogle-glog0v5
-RUN test -z "$skip_apt" && apt-get install -y libgflags2v5
-RUN test -z "$skip_apt" && apt-get install -y libconfig++9v5
-
-RUN test -z "$skip_apt" && apt-get install -y libsnappy1v5
-RUN test -z "$skip_apt" && apt-get install -y libyaml-cpp0.5v5
-RUN test -z "$skip_apt" && apt-get install -y libleveldb1v5
-
-RUN test -z "$skip_apt" && apt-get install -y libboost-system1.62.0
-RUN test -z "$skip_apt" && apt-get install -y libboost-thread1.62.0
-
-
-RUN rm -rf /tmp/*
-RUN rm /core
-
-RUN test -z "$skip_apt" && apt-get clean
 
 #ENTRYPOINT ["/build.sh"]
 
