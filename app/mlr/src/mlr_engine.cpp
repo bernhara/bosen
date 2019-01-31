@@ -168,6 +168,7 @@ void MLREngine::Start() {
   process_barrier_->wait();
 
   if (FLAGS_use_weight_file) {
+    // TODO: test if this option is still working
     if (client_id == 0 && thread_id == 0) {
       InitWeights(FLAGS_weight_file);
     }
@@ -258,7 +259,7 @@ void MLREngine::Start() {
           ComputeTestError(mlr_solver.get(), &test_workload_mgr,
               num_test_eval, eval_counter);
         }
-        if (client_id == 0 && thread_id == 0) {
+        if (thread_id == 0) {
           loss_table_.Inc(eval_counter, kColIdxLossTableEpoch, epoch + 1);
           loss_table_.Inc(eval_counter, kColIdxLossTableBatch,
               batch_counter);
@@ -272,7 +273,7 @@ void MLREngine::Start() {
               petuum::HighResolutionTimer save_disk_timer;
               LOG(INFO) << "SaveLoss now...";
               SaveLoss(eval_counter - 1);
-              SaveWeights(mlr_solver.get());
+              SaveWeights(mlr_solver.get(), client_id);
               checkpoint_timer.restart();
               LOG(INFO) << "Checkpointing finished in "
                 << save_disk_timer.elapsed();
@@ -294,7 +295,7 @@ void MLREngine::Start() {
         num_test_data_, eval_counter);
   }
   petuum::PSTableGroup::GlobalBarrier();
-  if (client_id == 0 && thread_id == 0) {
+  if (thread_id == 0) {
     loss_table_.Inc(eval_counter, kColIdxLossTableEpoch, num_epochs);
     loss_table_.Inc(eval_counter, kColIdxLossTableBatch,
         batch_counter);
@@ -303,7 +304,7 @@ void MLREngine::Start() {
     LOG(INFO) << std::endl << PrintAllEval(eval_counter);
     LOG(INFO) << "Final eval: " << PrintOneEval(eval_counter);
     SaveLoss(eval_counter);
-    SaveWeights(mlr_solver.get());
+    SaveWeights(mlr_solver.get(), client_id);
   }
   petuum::PSTableGroup::DeregisterThread();
 }
