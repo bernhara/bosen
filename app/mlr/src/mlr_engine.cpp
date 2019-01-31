@@ -22,14 +22,10 @@ namespace mlr {
 namespace {
 
 // Save MLRSGDSolver::w_cache_ to disk. Could be time consuming if w is large.
-void SaveWeights(AbstractMLRSGDSolver* mlr_solver, const int client_id = -1) {
+void SaveWeights(AbstractMLRSGDSolver* mlr_solver) {
   // Save weights.
   CHECK(!FLAGS_output_file_prefix.empty());
   std::string output_filename = FLAGS_output_file_prefix + ".weight";
-  if (client_id != -1) {
-    // client_id has been provided => append this information to the generated filename
-    output_filename += '.' + client_id;
-  }
   mlr_solver->SaveWeights(output_filename);
 }
 
@@ -273,7 +269,7 @@ void MLREngine::Start() {
               petuum::HighResolutionTimer save_disk_timer;
               LOG(INFO) << "SaveLoss now...";
               SaveLoss(eval_counter - 1);
-              SaveWeights(mlr_solver.get(), client_id);
+              SaveWeights(mlr_solver.get());
               checkpoint_timer.restart();
               LOG(INFO) << "Checkpointing finished in "
                 << save_disk_timer.elapsed();
@@ -304,7 +300,7 @@ void MLREngine::Start() {
     LOG(INFO) << std::endl << PrintAllEval(eval_counter);
     LOG(INFO) << "Final eval: " << PrintOneEval(eval_counter);
     SaveLoss(eval_counter);
-    SaveWeights(mlr_solver.get(), client_id);
+    SaveWeights(mlr_solver.get());
   }
   petuum::PSTableGroup::DeregisterThread();
 }
