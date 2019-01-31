@@ -33,3 +33,8 @@ RUN test -z "$skip_apt" \
 COPY tmp_root /
 
 CMD ["/home/dip/bin/testit.sh"]
+
+ENV MLR_MAIN=/home/dip/bin/mlr_main DATASETS_DIR=/home/dip/datasets NB_THREADS=3
+
+
+
