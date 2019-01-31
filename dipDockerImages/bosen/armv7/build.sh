@@ -9,17 +9,17 @@ rm -rf "${tmp_root}"
 
 mkdir -p "${tmp_root}/home/dip"
 mkdir -p "${tmp_root}/home/dip/bin"
-cp "${MLR_ROOT_DIR}/bin/mlr_main" "${tmp_root}/home/dip/bin"
+cp -a "${MLR_ROOT_DIR}/bin/mlr_main" "${tmp_root}/home/dip/bin"
 
 mkdir -p "${tmp_root}/home/dip/datasets"
-cp \
+cp -a \
     "${MLR_ROOT_DIR}/datasets/covtype.scale.test.small" \
     "${MLR_ROOT_DIR}/datasets/covtype.scale.test.small.meta" \
     "${MLR_ROOT_DIR}/datasets/covtype.scale.train.small" \
     "${MLR_ROOT_DIR}/datasets/covtype.scale.train.small.meta" \
     "${tmp_root}/home/dip/datasets"
 
-cp \
+cp -a \
     "${HERE}/trainWorker.sh" \
     "${HERE}/trainWorker.sh-config" \
     "${HERE}/testit.sh" \
