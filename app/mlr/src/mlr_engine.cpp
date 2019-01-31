@@ -22,10 +22,14 @@ namespace mlr {
 namespace {
 
 // Save MLRSGDSolver::w_cache_ to disk. Could be time consuming if w is large.
-void SaveWeights(AbstractMLRSGDSolver* mlr_solver) {
+void SaveWeights(AbstractMLRSGDSolver* mlr_solver, const int client_id = -1) {
   // Save weights.
   CHECK(!FLAGS_output_file_prefix.empty());
   std::string output_filename = FLAGS_output_file_prefix + ".weight";
+  if (client_id != -1) {
+    // client_id has been provided => append this information to the generated filename
+    output_filename += '.' + client_id;
+  }
   mlr_solver->SaveWeights(output_filename);
 }
 
