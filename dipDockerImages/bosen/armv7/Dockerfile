@@ -28,8 +28,8 @@ RUN test -z "$skip_apt" \
      && rm -f /core
 
 
-#ENTRYPOINT ["/build.sh"]
-
 #       	    apt-utils \
 
 COPY tmp_root /
+
+CMD ["/home/dip/bin/testit.sh"]
