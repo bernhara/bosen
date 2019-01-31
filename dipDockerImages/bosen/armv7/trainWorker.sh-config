@@ -1,4 +1,0 @@
-MLR_MAIN=/home/dip/bin/mlr_main
-DATASETS_DIR=/home/dip/datasets
-NB_THREADS=3
-
