@@ -22,7 +22,7 @@ Usage ()
     then
 	echo "ERROR: $1" 1>&2
     fi
-    echo "Usage: ${CMD} [--dryrun] [--output_prefix_file <prefix for generated loss file>] <this worker index> <worker specification> [<worker specification>]*" 1>&2
+    echo "Usage: ${CMD} [--dryrun] --my_wk_id=<this worker index> --peer_wk=<worker specification> [--peer_wk=<worker specification>]*" 1>&2
     echo "with <worker specification> having the following form: <worker hostname>:<petuum interworker tcp port>" 1>&2
     echo "NOTES:" 1>&2
     echo "\tworkers are indexed in appearing order (first specified worker has index 0)" 1>&2
@@ -39,6 +39,7 @@ set -- "${ARGarray[@]}"
 dryrun=false
 peer_wk_list=''
 this_worker_index=''
+mlr_args=''
 
 while [ -n "$1" ]
 do
@@ -70,6 +71,7 @@ do
 	    ;;
 
     esac
+    shift
 done	
 
 if [ -z ${this_worker_index} ]
@@ -81,6 +83,15 @@ if [ -z "${peer_wk_list}" ]
 then
     Usage "Missing remote worker specification"
 fi
+
+for opt in ${mlr_args}
+do
+    case "${opt}" in
+	--client_id=*|--num_clients=*|--hostfile=* )
+	    Usage "${opt} cannot be overwriten here" 1>&2
+	    ;;
+    esac
+done
 
 declare -a petuum_workers_specification_list
 
@@ -195,23 +206,6 @@ command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
    --hostfile=${tmp_dir}/localserver \
    --train_file=${train_file} \
 '
-
-mlr_extra_args=''
-if [ -n "${MLR_EXTRA_ARGS}" ]
-then
-    for opt in ${MLR_EXTRA_ARGS}
-    do
-	case "${opt}" in
-	    --client_id=*|--num_clients=*|--hostfile=* )
-		echo "${opt} cannot be overwriten here" 1>&2
-		exit 1
-		;;
-	esac
-
-	mlr_extra_args="${mlr_extra_args} ${opt}"
-    done
-fi
-					    
 
 command='
 mlr="${MLR_MAIN}" \
