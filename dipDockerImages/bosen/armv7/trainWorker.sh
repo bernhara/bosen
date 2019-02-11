@@ -1,7 +1,5 @@
 #! /bin/bash
 
-# $Id: trainWorker.sh,v 1.3 2017/11/22 14:09:16 orba6563 Exp orba6563 $
-
 HERE=`dirname $0`
 CMD=`basename $0`
 
@@ -191,23 +189,45 @@ command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
    --train_file=${train_file} \
 '
 
+mlr_extra_args=''
+if [ -n "${MLR_EXTRA_ARGS}" ]
+then
+    for opt in ${MLR_EXTRA_ARGS}
+    do
+	case "${opt}" in
+	    --client_id=*|--num_clients=*|--hostfile=* )
+		echo "${opt} cannot be overwriten here" 1>&2
+		exit 1
+		;;
+	esac
+
+	mlr_extra_args="${mlr_extra_args} ${opt}"
+    done
+fi
+					    
+
 command='
-MLR="${MLR_MAIN}" \
+mlr="${MLR_MAIN}" \
 \
 GLOG_logtostderr=true \
 GLOG_v=-1 GLOG_minloglevel=0 \
 \
-train_file="${TRAIN_FILE}" \
 hostfile=${tmp_dir}/localserver \
 num_app_threads=${NB_THREADS} \
 num_clients="${nb_workers}" \
 client_id="${this_worker_index}" \
 global_data="${mlr_arg_global_data}" \
 output_file_prefix="${output_prefix_file}" \
-lr_decay_rate=0.99 \
-num_train_eval=10000 \
 \
-"${HERE}/mlrWrapper.sh}"
+train_file="${train_file}" \
+lr_decay_rate=${lr_decay_rate:-0.99} \
+num_train_eval=${num_train_eval:-10000} \
+num_test_eval=${num_test_eval:-20} \
+perform_test=${perform_test:-false} \
+num_batches_per_eval=${num_batches_per_eval:-10} \
+lambda=${lambda:-0} \
+\
+"${HERE}/mlrWrapper.sh"
 '
 
 if ${dryrun}
