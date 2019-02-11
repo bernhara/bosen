@@ -22,7 +22,7 @@ Usage ()
     then
 	echo "ERROR: $1" 1>&2
     fi
-    echo "Usage: ${CMD} [--dryrun] --my_wk_id=<this worker index> --peer_wk=<worker specification> [--peer_wk=<worker specification>]*" 1>&2
+    echo "Usage: ${CMD} [--dryrun] --my_wk_id=<this worker index> --peer_wk=<worker specification> [--peer_wk=<worker specification>]* -- <mlr args>" 1>&2
     echo "with <worker specification> having the following form: <worker hostname>:<petuum interworker tcp port>" 1>&2
     echo "NOTES:" 1>&2
     echo "\tworkers are indexed in appearing order (first specified worker has index 0)" 1>&2
@@ -207,7 +207,7 @@ command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
    --train_file=${train_file} \
 '
 
-command='
+command="
 mlr="${MLR_MAIN}" \
 \
 GLOG_logtostderr=true \
@@ -228,8 +228,8 @@ perform_test=${perform_test:-false} \
 num_batches_per_eval=${num_batches_per_eval:-10} \
 lambda=${lambda:-0} \
 \
-"${HERE}/mlrWrapper.sh"
-'
+"${HERE}/mlrWrapper.sh" ${mlr_args} \
+"
 
 if ${dryrun}
 then
