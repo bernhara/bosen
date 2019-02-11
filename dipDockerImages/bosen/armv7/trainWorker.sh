@@ -191,6 +191,25 @@ command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
    --train_file=${train_file} \
 '
 
+command='
+MLR="${MLR_MAIN}" \
+\
+GLOG_logtostderr=true \
+GLOG_v=-1 GLOG_minloglevel=0 \
+\
+train_file="${TRAIN_FILE}" \
+hostfile=${tmp_dir}/localserver \
+num_app_threads=${NB_THREADS} \
+num_clients="${nb_workers}" \
+client_id="${this_worker_index}" \
+global_data="${mlr_arg_global_data}" \
+output_file_prefix="${output_prefix_file}" \
+lr_decay_rate=0.99 \
+num_train_eval=10000 \
+\
+"${HERE}/mlrWrapper.sh}"
+'
+
 if ${dryrun}
 then
     echo "${command}"

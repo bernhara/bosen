@@ -164,6 +164,7 @@ void MLREngine::Start() {
   process_barrier_->wait();
 
   if (FLAGS_use_weight_file) {
+    // TODO: test if this option is still working
     if (client_id == 0 && thread_id == 0) {
       InitWeights(FLAGS_weight_file);
     }
@@ -254,7 +255,7 @@ void MLREngine::Start() {
           ComputeTestError(mlr_solver.get(), &test_workload_mgr,
               num_test_eval, eval_counter);
         }
-        if (client_id == 0 && thread_id == 0) {
+        if (thread_id == 0) {
           loss_table_.Inc(eval_counter, kColIdxLossTableEpoch, epoch + 1);
           loss_table_.Inc(eval_counter, kColIdxLossTableBatch,
               batch_counter);
@@ -290,7 +291,7 @@ void MLREngine::Start() {
         num_test_data_, eval_counter);
   }
   petuum::PSTableGroup::GlobalBarrier();
-  if (client_id == 0 && thread_id == 0) {
+  if (thread_id == 0) {
     loss_table_.Inc(eval_counter, kColIdxLossTableEpoch, num_epochs);
     loss_table_.Inc(eval_counter, kColIdxLossTableBatch,
         batch_counter);
