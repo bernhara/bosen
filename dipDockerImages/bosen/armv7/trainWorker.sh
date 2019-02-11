@@ -37,39 +37,57 @@ realpath () {
 set -- "${ARGarray[@]}"
 
 dryrun=false
-if [ "$1" = "--dryrun" ]
-then
-    dryrun=true
-    shift 1
-fi
+peer_wk_list=''
+this_worker_index=''
 
-if [ "$1" = "--output_prefix_file" ]
-then
-    shift 1
-    output_prefix_file="$1"
+while [ -n "$1" ]
+do
 
-    if [ -z "${output_prefix_file}" ]
-    then
-	Usage "no argument provided to --output_prefix_file"
-    fi
+    case "$1" in
 
-    shift 1
-fi
+	"--dryrun")
+	    dryrun=true
+	    ;;
 
-this_worker_index="$1"
-shift 1
+	--my_wk_id=*)
+	    this_worker_index="${1#*=}"
+	    ;;
+
+	--peer_wk=*)
+	    peer_wk_list="${peer_wk_list} ${1#*=}"
+	    ;;
+
+	"--" )
+	    # remaing are mlr args
+	    shift
+	    mlr_args="$@"
+	    # stop parsing args
+	    break
+	    ;;
+
+	*)
+	    Usage "Bad arg: $1"
+	    ;;
+
+    esac
+done	
 
 if [ -z ${this_worker_index} ]
 then
     Usage "Missing <this worker index> argument"
 fi
 
+if [ -z "${peer_wk_list}" ]
+then
+    Usage "Missing remote worker specification"
+fi
+
 declare -a petuum_workers_specification_list
 
 list_index=0
-while [ -n "$1" ]
+for i in ${peer_wk_list}
 do
-    worker_specification="$1"
+    worker_specification="$i"
 
     worker_index="${list_index}"
 
@@ -84,14 +102,7 @@ do
     petuum_workers_specification_list[${worker_index}]="'${list_index}' '${worker_hostname}' '${petuum_interworker_tcp_port}'"
     list_index=$(( ${list_index} + 1 ))
 
-    shift
-
 done
-
-if [ ${#petuum_workers_specification_list[@]} -eq 0 ]
-then
-    Usage "Missing worker specification"
-fi
 
 ##############################################################################################
 #
@@ -156,10 +167,6 @@ then
 	train_file="${DATASETS_DIR}/BIG.x1.libsvm.X.0"
 	mlr_arg_global_data=true
     fi
-
-else
-
-    train_file="${TRAIN_FILE}"
 
 fi
 
