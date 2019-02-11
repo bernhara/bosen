@@ -85,6 +85,7 @@ ${mlr} \
     --train_file="${train_file}" \
     --global_data="${global_data}" \
     --perform_test="${perform_test}" \
+    --test_file="${test_file}" \
     --use_weight_file="${use_weight_file}" \
     --weight_file="${weight_file}" \
     --num_epochs="${num_epochs}" \
