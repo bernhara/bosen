@@ -1,8 +1,6 @@
 #! /bin/bash
 
-# $Id: directMLR.sh,v 1.3 2019/02/04 16:21:56 orba6563 Exp $
-
-: ${MLR:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
+: ${mlr:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
 
 # Petuum Parameters
 #  hostfile, "", "Path to file containing server ip:port."
@@ -83,7 +81,7 @@ set -a
 : ${GLOG_minloglevel=:0}
 set +a
 
-${MLR} \
+${mlr} \
     --train_file="${train_file}" \
     --global_data="${global_data}" \
     --perform_test="${perform_test}" \
