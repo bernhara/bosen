@@ -168,23 +168,6 @@ else
 fi
 
 
-
-# FIXME: should no more be used
-if [ -z "XXXXXXXX${TRAIN_FILE}" ]
-then
-
-    if ${partitioned_mode}
-    then
-	train_file="${DATASETS_DIR}/BIG.x${nb_workers}.libsvm.X"
-	mlr_arg_global_data=false
-    else
-	train_file="${DATASETS_DIR}/BIG.x1.libsvm.X.0"
-	mlr_arg_global_data=true
-    fi
-
-fi
-
-
 # TODO: which args should be parametrized
 
 if [ -z "${output_prefix_file}" ]
@@ -199,7 +182,8 @@ else
     mlr_arg_global_data=true
 fi
 
-command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
+command='
+GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
 "${MLR_MAIN}" \
    --client_id="${this_worker_index}" \
    --num_clients=${nb_workers} \
