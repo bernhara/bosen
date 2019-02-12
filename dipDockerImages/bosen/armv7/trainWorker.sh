@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -x
+
 HERE=`dirname $0`
 CMD=`basename $0`
 
@@ -167,7 +169,8 @@ fi
 
 
 
-if [ -z "${TRAIN_FILE}" ]
+# FIXME: should no more be used
+if [ -z "XXXXXXXX${TRAIN_FILE}" ]
 then
 
     if ${partitioned_mode}
@@ -189,25 +192,24 @@ then
     output_prefix_file="${tmp_dir}/rez"
 fi
 
+if $partitioned_mode
+then
+    mlr_arg_global_data=false
+else
+    mlr_arg_global_data=true
+fi
+
 command='GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
 "${MLR_MAIN}" \
-   --num_comm_channels_per_client=1 \
-   --staleness=2 \
    --client_id="${this_worker_index}" \
-   --num_app_threads=${NB_THREADS} \
    --num_clients=${nb_workers} \
-   --use_weight_file=false --weight_file= \
-   --num_batches_per_epoch=10 --num_epochs=40 \
-   --output_file_prefix="${output_prefix_file}" \
-   --lr_decay_rate=0.99 --num_train_eval=10000 \
    --global_data=${mlr_arg_global_data} \
-   --init_lr=0.01 \
-   --num_test_eval=20 --perform_test=false --num_batches_per_eval=10 --lambda=0 \
    --hostfile=${tmp_dir}/localserver \
-   --train_file=${train_file} \
+   \
+   ${mlr_args} \
 '
 
-command="
+XXXXcommand="
 mlr="${MLR_MAIN}" \
 \
 GLOG_logtostderr=true \
