@@ -120,7 +120,7 @@ do
 	# contains arg
 	:
     else
-	echo "${COMMAND}: missing mandatory args \"--${i}\""
+	echo "${COMMAND}: missing mandatory args \"--${i}\"" 1>&2
 	exit 1
     fi
 done
@@ -129,18 +129,45 @@ done
 # pre-check provided args to prevent mlr core dump
 #
 
-train_file=$(
+getFileNameFormMlrLaunchArgs () {
+    arg="$1"
+
     for i in ${mlr_launch_args}
     do
 	arg="${i%=*}"
-	if [ "${arg}" = '--train_file' ]
+	if [ "${arg}" = "${1}" ]
 	then
 	    arg_value="${i#*=*}"
 	    echo "${arg_value}"
 	    break
 	fi
     done
+}
+
+train_file=$(
+    getFileNameFormMlrLaunchArgs '--train_file'
 )
+
+if [ -r "${train_file}" ]
+then
+    echo "${COMMAND}: train file \"${train_file}\" could not be read" 1>&2
+    exit 1
+fi
+
+test_file=$(
+    getFileNameFormMlrLaunchArgs '--test_file'
+)
+
+if [ -n "${test_file}" ]
+then
+    if [ -r "${train_file}" ]
+    then
+	echo "${COMMAND}: test file \"${test_file}\" could not be read" 1>&2
+	exit 1
+    fi
+fi
+
+
 
 exit 2
     
