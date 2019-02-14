@@ -168,37 +168,10 @@ then
 fi
 
 
-
-exit 2
-    
-
-while arg in "$@"
-do
-
-    case "$arg" in
-	
-
-: ${train_file:="/NO_TRAIN_FILE"}
-: ${global_data:="true"}
-: ${perform_test:="false"}
-: ${use_weight_file:="false"}
-: ${weight_file:=""}
-: ${num_epochs:=40}
-: ${num_batches_per_epoch:=10}
-: ${init_lr:=0.01} # initial learning rate
-: ${lr_decay_rate:=0.95} # lr = init_lr * (lr_decay_rate)
-: ${num_batches_per_eval:=300}
-: ${num_train_eval:=10000} # compute train error on these many train.
-: ${num_test_eval:=20}
-: ${lambda:=0}
-: ${output_file_prefix:="/NO_OUTPUT_PREXIX"}
-
-: ${hostfile:="/NO_HOSTFILE"}
-: ${num_app_threads:=4}
-: ${staleness:=2}
-: ${num_comm_channels_per_client:=1} # 1~2 are usually enough
-
-set -x
+if [ -n "${VERBOSE}" ]
+then
+    set -x
+fi
 
 set -a
 : ${GLOG_logtostderr:=true}
@@ -209,24 +182,3 @@ set +a
 ${mlr} "$@"
 
 exit $?
-
-${mlr} \
-    --train_file="${train_file}" \
-    --global_data="${global_data}" \
-    --perform_test="${perform_test}" \
-    --test_file="${test_file}" \
-    --use_weight_file="${use_weight_file}" \
-    --weight_file="${weight_file}" \
-    --num_epochs="${num_epochs}" \
-    --num_batches_per_epoch="${num_batches_per_epoch}" \
-    --init_lr="${init_lr}" \
-    --lr_decay_rate="${lr_decay_rate}" \
-    --num_batches_per_eval="${num_batches_per_eval}" \
-    --num_train_eval="${num_train_eval}" \
-    --num_test_eval="${num_test_eval}" \
-    --lambda="${lambda}" \
-    --output_file_prefix="${output_file_prefix}" \
-    --hostfile="${hostfile}" \
-    --num_app_threads="${num_app_threads}" \
-    --staleness="${staleness}" \
-    --num_comm_channels_per_client="${num_comm_channels_per_client}"
