@@ -67,23 +67,20 @@ default_value_for_arg_array=(
      "global_data:true"
      "perform_test:false"
      "use_weight_file:false"
+     "weight_file:"
+     "num_epochs:1"
+     "num_batches_per_epoch:10"
+     "init_lr:0.01"
+     "lr_decay_rate:1"
+     "num_batches_per_eval:10"
+     "num_train_eval:10000"
+     "num_test_eval:20"
+     "lambda:0"
+     "num_app_threads:2"
+     "staleness:2"
+     "num_comm_channels_per_client:1"
 )
 
-: ${weight_file:=""}
-: ${num_epochs:=40}
-: ${num_batches_per_epoch:=10}
-: ${init_lr:=0.01} # initial learning rate
-: ${lr_decay_rate:=0.95} # lr = init_lr * (lr_decay_rate)
-: ${num_batches_per_eval:=300}
-: ${num_train_eval:=10000} # compute train error on these many train.
-: ${num_test_eval:=20}
-: ${lambda:=0}
-: ${output_file_prefix:="/NO_OUTPUT_PREXIX"}
-
-: ${hostfile:="/NO_HOSTFILE"}
-: ${num_app_threads:=4}
-: ${staleness:=2}
-: ${num_comm_channels_per_client:=1} # 1~2 are usually enough
 
 mlr_launch_default_args=''
 
