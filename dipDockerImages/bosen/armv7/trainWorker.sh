@@ -15,8 +15,6 @@ fi
 # Globals
 : ${PETUUM_INSTALL_DIR:=/share/PLMS}
 : ${MLR_MAIN:="${PETUUM_INSTALL_DIR}/bosen/app/mlr/bin/mlr_main"}
-: ${NB_THREADS:=2}
-: ${DATASETS_DIR:="${HERE}/datasets"}
 
 Usage ()
 {
@@ -183,7 +181,6 @@ else
 fi
 
 command='
-GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0 \
 "${MLR_MAIN}" \
    --client_id="${this_worker_index}" \
    --num_clients=${nb_workers} \
