@@ -1,6 +1,14 @@
 #! /bin/bash
 
+#
+# launches mlr binary file, providing reasonable arguments in not provided
+#
+
 : ${mlr:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
+
+#
+# This comes from the documentation
+#
 
 # Petuum Parameters
 #  hostfile, "", "Path to file containing server ip:port."
@@ -55,6 +63,57 @@
 #  w_table_num_cols, 1000000,
 #      "# of columns in w_table. Only used for binary LR."
 
+default_value_for_arg_array=(
+     "global_data:true"
+     "perform_test:false"
+     "use_weight_file:false"
+)
+
+: ${weight_file:=""}
+: ${num_epochs:=40}
+: ${num_batches_per_epoch:=10}
+: ${init_lr:=0.01} # initial learning rate
+: ${lr_decay_rate:=0.95} # lr = init_lr * (lr_decay_rate)
+: ${num_batches_per_eval:=300}
+: ${num_train_eval:=10000} # compute train error on these many train.
+: ${num_test_eval:=20}
+: ${lambda:=0}
+: ${output_file_prefix:="/NO_OUTPUT_PREXIX"}
+
+: ${hostfile:="/NO_HOSTFILE"}
+: ${num_app_threads:=4}
+: ${staleness:=2}
+: ${num_comm_channels_per_client:=1} # 1~2 are usually enough
+
+mlr_launch_default_args=''
+
+for i in "${default_value_for_arg_array[@]}"
+do
+    arg_name="${i%:*}"
+    arg_value="${i#*:*}"
+    echo $arg_name
+    echo $arg_value
+
+    if grep -- "--${arg_name}=" <<< "$@"
+    then
+	# contains arg
+	:
+    else
+	mlr_launch_default_args="${mlr_launch_default_args} --${arg_name}=${arg_value}"
+    fi
+done
+
+mlr_launch_args="${mlr_launch_default_args} $@"
+
+exit 2
+    
+
+while arg in "$@"
+do
+
+    case "$arg" in
+	
+
 : ${train_file:="/NO_TRAIN_FILE"}
 : ${global_data:="true"}
 : ${perform_test:="false"}
@@ -75,11 +134,17 @@
 : ${staleness:=2}
 : ${num_comm_channels_per_client:=1} # 1~2 are usually enough
 
+set -x
+
 set -a
 : ${GLOG_logtostderr:=true}
 : ${GLOG_v:=-1}
 : ${GLOG_minloglevel=:0}
 set +a
+
+${mlr} "$@"
+
+exit $?
 
 ${mlr} \
     --train_file="${train_file}" \
