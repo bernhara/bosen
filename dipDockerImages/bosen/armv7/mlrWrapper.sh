@@ -87,7 +87,7 @@ mlr_launch_default_args=''
 for i in "${default_value_for_arg_array[@]}"
 do
     arg_name="${i%:*}"
-    arg_value="${i#*:*}"
+    arg_value="${i#*:}"
     echo $arg_name
     echo $arg_value
 
@@ -101,6 +101,46 @@ do
 done
 
 mlr_launch_args="${mlr_launch_default_args} $@"
+
+#
+# check for missing args
+#
+
+mandatory_arg_array=(
+   "train_file"
+   "hostfile"
+   "client_id"
+   "num_clients"
+)
+
+for i in "${mandatory_arg_array[@]}"
+do
+    if grep -- "--${i}=" <<< "${mlr_launch_args}"
+    then
+	# contains arg
+	:
+    else
+	echo "${COMMAND}: missing mandatory args \"--${i}\""
+	exit 1
+    fi
+done
+
+#
+# pre-check provided args to prevent mlr core dump
+#
+
+train_file=$(
+    for i in ${mlr_launch_args}
+    do
+	arg="${i%=*}"
+	if [ "${arg}" = '--train_file' ]
+	then
+	    arg_value="${i#*=*}"
+	    echo "${arg_value}"
+	    break
+	fi
+    done
+)
 
 exit 2
     
