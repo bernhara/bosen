@@ -9,7 +9,7 @@ ENV https_proxy=${https_proxy}
 
 RUN \
        apt-get update \
-    && apt-get install -y --allow-unauthenticated \
+    && apt-get install -y  \
             libgcc1 \
             libc6 \
             libzmq5 \
