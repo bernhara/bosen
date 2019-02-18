@@ -7,9 +7,9 @@ LABEL maintainer="BERNHARD Raphael <raphael.bernhard@orange.com>"
 ENV http_proxy=${http_proxy}
 ENV https_proxy=${https_proxy}
 
-RUN test -z "$skip_apt" \
-    && apt-get update \
-    && apt-get install -y \
+RUN \
+       apt-get update \
+    && apt-get install -y --allow-unauthenticated \
             libgcc1 \
             libc6 \
             libzmq5 \
