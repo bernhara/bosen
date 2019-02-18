@@ -37,8 +37,8 @@ image_name="${REGISTRY_HOSTNAME_IMAGE_NAME_PREFIX}/dip/mlr-worker"
 image_tag="latest"
 
 build_arg_element=""
-build_arg_element="${build_arg_element} http_proxy=http://proxy:8080"
-build_arg_element="${build_arg_element} https_proxy=http://proxy:8080"
+build_arg_element="${build_arg_element} http_proxy=http://proxy:3128"
+build_arg_element="${build_arg_element} https_proxy=http://proxy:3128"
 
 build_arg_switch_list=""
 for a in ${build_arg_element}
