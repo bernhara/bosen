@@ -12,7 +12,6 @@
 architecture=$( uname -m )
 
 rm -rf "${tmp_root}"
-
 mkdir -p "${tmp_root}/home/dip"
 mkdir -p "${tmp_root}/home/dip/bin"
 cp -a "${MLR_ROOT_DIR}/bin/mlr_main" "${tmp_root}/home/dip/bin"
