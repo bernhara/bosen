@@ -8,9 +8,9 @@ ENV http_proxy=${http_proxy}
 ENV https_proxy=${https_proxy}
 
 RUN \
-       apt-get update \
-    && apt-get install -y  \
-            libgcc1 \
+    apt-get update && \
+    apt-get install -y  \
+    	    libgcc1 \
             libc6 \
             libzmq5 \
             libgoogle-glog0v5 \
@@ -22,11 +22,10 @@ RUN \
             libleveldb1v5 \
             \
             libboost-system1.62.0 \
-            libboost-thread1.62.0 \
-     && apt-get clean \
-     && rm -rf /tmp/* \
-     && rm -f /core
-
+            libboost-thread1.62.0 && \
+     apt-get clean && \
+     rm -rf /tmp/* && \
+     rm -f /core
 
 COPY tmp_root /
 
