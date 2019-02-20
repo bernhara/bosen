@@ -4,7 +4,15 @@
 # launches mlr binary file, providing reasonable arguments in not provided
 #
 
-: ${mlr:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
+: ${MLR_MAIN:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
+: ${TRAINING_TIMEOUT:=0}
+
+#
+# force some system limits
+#
+
+# prevent core dumps
+ulimit -c 0
 
 #
 # This comes from the documentation
@@ -81,17 +89,14 @@ default_value_for_arg_array=(
      "num_comm_channels_per_client:1"
 )
 
-
 mlr_launch_default_args=''
 
 for i in "${default_value_for_arg_array[@]}"
 do
     arg_name="${i%:*}"
     arg_value="${i#*:}"
-    echo $arg_name
-    echo $arg_value
 
-    if grep -- "--${arg_name}=" <<< "$@"
+    if grep --silent -- "--${arg_name}=" <<< "$@"
     then
 	# contains arg
 	:
@@ -115,7 +120,7 @@ mandatory_arg_array=(
 
 for i in "${mandatory_arg_array[@]}"
 do
-    if grep -- "--${i}=" <<< "${mlr_launch_args}"
+    if grep --silent -- "--${i}=" <<< "${mlr_launch_args}"
     then
 	# contains arg
 	:
@@ -129,13 +134,15 @@ done
 # pre-check provided args to prevent mlr core dump
 #
 
-getFileNameFormMlrLaunchArgs () {
-    arg="$1"
+getArgValue () {
+    arg_name="$1"
+    shift
+    arg_list="$@"
 
-    for i in ${mlr_launch_args}
+    for i in ${arg_list}
     do
 	arg="${i%=*}"
-	if [ "${arg}" = "${1}" ]
+	if [ "${arg}" = "${arg_name}" ]
 	then
 	    arg_value="${i#*=*}"
 	    echo "${arg_value}"
@@ -144,9 +151,25 @@ getFileNameFormMlrLaunchArgs () {
     done
 }
 
-train_file=$(
-    getFileNameFormMlrLaunchArgs '--train_file'
+
+global_data=$( getArgValue '--global_data' ${mlr_launch_args} )
+case "${global_data}" in
+    "true")
+	data_file_suffix=''
+	;;
+    "false")
+	client_id=$( getArgValue '--client_id' ${mlr_launch_args} )
+	data_file_suffix=".${client_id}"
+	;;
+    *)
+	echo "${COMMAND}:bad value \"${global_data} for \"--global_data\"" 1>&2
+	exit 1
+esac
+
+train_file_prefix=$(
+    getArgValue '--train_file' ${mlr_launch_args}
 )
+train_file="${train_file_prefix}${data_file_suffix}"
 
 if [ ! -r "${train_file}" ]
 then
@@ -154,22 +177,51 @@ then
     exit 1
 fi
 
-test_file=$(
-    getFileNameFormMlrLaunchArgs '--test_file'
+perform_test=$(
+    getArgValue '--perform_test' ${mlr_launch_args}
 )
 
-if [ -n "${test_file}" ]
+if [ "${perform_test}" = "true" ]
 then
-    if [ ! -r "${train_file}" ]
+
+    test_file_prefix=$(
+	getArgValue '--test_file' ${mlr_launch_args}
+    )
+    test_file="${test_file_prefix}${data_file_suffix}"
+
+    if [ -n "${test_file}" ]
     then
-	echo "${COMMAND}: test file \"${test_file}\" could not be read" 1>&2
-	exit 1
+	if [ ! -r "${test_file}" ]
+	then
+	    echo "${COMMAND}: test file \"${test_file}\" could not be read" 1>&2
+	    exit 1
+	fi
     fi
+
+fi
+
+
+if [ -z "${TRAINING_TIMEOUT}" ]
+then
+    TRAINING_TIMEOUT=0
+fi
+
+if [ "$( expr "${TRAINING_TIMEOUT}" + 0 2>/dev/null )" != "${TRAINING_TIMEOUT}" ]
+then
+    echo "${COMMAND}: TRAINING_TIMEOUT value \"${TRAINING_TIMEOUT}\" is not an integer value" 1>&2
+    exit 1
+fi
+
+if [ "${TRAINING_TIMEOUT}" -lt 0 ]
+then
+    echo "${COMMAND}: TRAINING_TIMEOUT value \"${TRAINING_TIMEOUT}\" should be a positive value" 1>&2
+    exit 1
 fi
 
 
 if [ -n "${VERBOSE}" ]
 then
+    echo "$0: enable verbosity" 1>&2
     set -x
 fi
 
@@ -179,6 +231,11 @@ set -a
 : ${GLOG_minloglevel=:0}
 set +a
 
-${mlr} "$@"
+if [ "${TRAINING_TIMEOUT}" -gt 0 ]
+then
+    timeout --preserve-status "${TRAINING_TIMEOUT}m" ${MLR_MAIN} "$@"
+else
+    ${MLR_MAIN} "$@"
+fi
 
 exit $?
