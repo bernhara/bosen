@@ -148,7 +148,7 @@ train_file=$(
     getFileNameFormMlrLaunchArgs '--train_file'
 )
 
-if [ -r "${train_file}" ]
+if [ ! -r "${train_file}" ]
 then
     echo "${COMMAND}: train file \"${train_file}\" could not be read" 1>&2
     exit 1
@@ -160,7 +160,7 @@ test_file=$(
 
 if [ -n "${test_file}" ]
 then
-    if [ -r "${train_file}" ]
+    if [ ! -r "${train_file}" ]
     then
 	echo "${COMMAND}: test file \"${test_file}\" could not be read" 1>&2
 	exit 1
