@@ -9,6 +9,8 @@
 # Create the file system which will be copied to the container
 #
 
+architecture=$( uname -m )
+
 rm -rf "${tmp_root}"
 
 mkdir -p "${tmp_root}/home/dip"
@@ -24,6 +26,7 @@ cp -a \
     "${tmp_root}/home/dip/datasets"
 
 cp -a \
+    "${HERE}/mlrWrapper.sh" \
     "${HERE}/trainWorker.sh" \
     "${HERE}/testit.sh" \
     "${tmp_root}/home/dip/bin"
@@ -34,7 +37,7 @@ cp -a \
 #
 
 image_name="${REGISTRY_HOSTNAME_IMAGE_NAME_PREFIX}/dip/mlr-worker"
-image_tag="latest"
+image_tag="${architecture}-latest"
 
 build_arg_element=""
 build_arg_element="${build_arg_element} http_proxy=http://proxy:3128"
@@ -46,4 +49,4 @@ do
     build_arg_switch_list="${build_arg_switch_list} --build-arg ${a}"
 done
     
-docker build  --force-rm -t "${image_name}:${image_tag}" --file "${HERE}/Dockerfile" ${build_arg_switch_list} ${HERE}
+docker build  --force-rm -t "${image_name}:${image_tag}" --file "${HERE}/Dockerfile.${architecture}" ${build_arg_switch_list} ${HERE}
