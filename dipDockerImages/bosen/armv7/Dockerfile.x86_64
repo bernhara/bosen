@@ -1,0 +1,20 @@
+# -*- mode: indented-text -*-
+
+FROM centos:7
+LABEL maintainer="BERNHARD Raphael <raphael.bernhard@orange.com>"
+
+ENV http_proxy=${http_proxy}
+ENV https_proxy=${https_proxy}
+
+RUN \
+    yum -y install epel-release && \
+    yum install -y leveldb yaml-cpp libconfig glog boost zeromq3 && \
+    yum clean all && \
+    rm -rf /tmp/* && \
+    rm -f /core
+
+COPY tmp_root /
+
+CMD ["/home/dip/bin/testit.sh"]
+
+ENV MLR_MAIN=/home/dip/bin/mlr_main NB_THREADS=2 GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0
