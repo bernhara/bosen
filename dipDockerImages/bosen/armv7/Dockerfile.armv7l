@@ -28,8 +28,6 @@ RUN \
      && rm -f /core
 
 
-#                   apt-utils \
-
 COPY tmp_root /
 
 CMD ["/home/dip/bin/testit.sh"]
