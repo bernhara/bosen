@@ -149,6 +149,48 @@ mkdir -p "${tmp_dir}"
 ) > ${tmp_dir}/localserver
 
 #
+# Test connectivity with all peers
+# rem: mlr hangs if peers are not read nore reachable
+#
+set -x
+for worker_specification in "${petuum_workers_specification_list[@]}"
+do
+
+    # transform the list into an array (all elements are quoted to handle empty elements (=> eval)
+    eval worker_specification_array=( ${worker_specification} )
+    worker_index="${worker_specification_array[0]}"
+    worker_hostname="${worker_specification_array[1]}"
+    petuum_interworker_tcp_port="${worker_specification_array[2]}"
+
+    #
+    # 
+    MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP=30
+    CHECK_FOREIGN_WORKER_HOSTNAME_LOOP_DELAY=1s
+
+    for i in $(seq ${MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP})
+    do
+	if ping -w 1 -c 1 ${worker_hostname}
+	then
+	    # hostname ${worker_hostname} is a valid hostname AND it is up
+	    break
+	fi
+	
+	# last time we signal an error
+	if [ "$i" -eq ${MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP} ]
+	then
+	    echo "FATAL ERROR: peer ${worker_hostname} is not reachable" 1>&2
+	    exit 1
+	fi
+
+	# may be the ${worker_hostname} is not yet a valid hostname.
+	# wait for host to come up
+	sleep ${CHECK_FOREIGN_WORKER_HOSTNAME_LOOP_DELAY}
+
+    done
+done
+set +x
+
+#
 # Launch MLR on all workerd
 #
 
