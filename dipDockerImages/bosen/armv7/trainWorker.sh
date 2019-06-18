@@ -152,7 +152,7 @@ mkdir -p "${tmp_dir}"
 # Test connectivity with all peers
 # rem: mlr hangs if peers are not read nore reachable
 #
-set -x
+
 for worker_specification in "${petuum_workers_specification_list[@]}"
 do
 
@@ -188,7 +188,6 @@ do
 
     done
 done
-set +x
 
 #
 # Launch MLR on all workerd
