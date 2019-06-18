@@ -175,6 +175,8 @@ do
 	    break
 	fi
 	
+	echo "INFO: peer connectivity test: could not reach ${worker_hostname} at iteration $i" 1>&2
+
 	# last time we signal an error
 	if [ "$i" -eq ${MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP} ]
 	then
