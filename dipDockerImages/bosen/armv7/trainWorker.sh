@@ -172,6 +172,7 @@ do
 	if ping -w 1 -c 1 ${worker_hostname} >/dev/null 2>/dev/null
 	then
 	    # hostname ${worker_hostname} is a valid hostname AND it is up
+	    echo "INFO: peer ${worker_hostname} is up and reachable" 1>&2
 	    break
 	fi
 	
@@ -180,7 +181,7 @@ do
 	# last time we signal an error
 	if [ "$i" -eq ${MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP} ]
 	then
-	    echo "FATAL ERROR: peer ${worker_hostname} is not reachable" 1>&2
+	    echo "FATAL ERROR: peer ${worker_hostname} is still not reachable. Abort." 1>&2
 	    exit 1
 	fi
 
