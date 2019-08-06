@@ -12,6 +12,8 @@
 #include <ml/include/ml.hpp>
 #include <io/general_fstream.hpp>
 
+#include <gflags/gflags.h>
+
 namespace mlr {
 
 MLRSGDSolver::MLRSGDSolver(const MLRSGDSolverConfig& config) :
@@ -136,6 +138,11 @@ void MLRSGDSolver::MiniBatchSGD(
       petuum::ml::FeatureScaleAndAdd(-lr * y_vec[i], feature,
           &w_cache_[i]);
     }
+  }
+
+  // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
+  if (! FLAGS_minibatch_weight_dump_file.empty() ) {
+    SaveWeights (FLAGS_minibatch_weight_dump_file);
   }
 }
 
