@@ -28,27 +28,18 @@ m1 = m.splitlines()
 num_labels_line=m1[0]
 feature_dim_line=m1[1]
 
-_, num_labels_str =  num_labels_line.split(':') num_labels = int(num_labels_str)
+_, num_labels_str =  num_labels_line.split(':')
+num_labels = int(num_labels_str)
 
-_, feature_dim_str = feature_dim_line.split(':') feature_dim = int(feature_dim_str)
+_, feature_dim_str = feature_dim_line.split(':')
+feature_dim = int(feature_dim_str)
 
 matrix=m1[2:]
 
 svm_matrix_list=''
 for label, l in zip(range(num_labels), matrix):
-     svm_line=label + ' ' + l
-     svm_matrix_list.append (svm_line)
-
-
-
-
-
-
-
---
-Raphaël Bernhard
-06110 Le Cannet - France
-mailto:raphael.bernhard@orange.fr
+    svm_line=label + ' ' + l
+    svm_matrix_list.append (svm_line)
 
 
 
