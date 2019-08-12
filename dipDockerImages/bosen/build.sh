@@ -1,7 +1,7 @@
 #! /bin/bash
 
 : ${HERE=`dirname "$0"`}
-: ${MLR_ROOT_DIR:="${HERE}/../../../app/mlr"}
+: ${MLR_ROOT_DIR:="${HERE}/../../app/mlr"}
 : ${tmp_root:="${HERE}/tmp_root"}
 : ${REGISTRY_HOSTNAME_IMAGE_NAME_PREFIX="s-eunuc:5000"}
 
