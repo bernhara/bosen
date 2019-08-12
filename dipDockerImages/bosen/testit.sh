@@ -23,6 +23,5 @@ echo "0 localhost 9999" > /tmp/sole_localhost_hostfile
     --num_train_eval=10000 \
     --init_lr=0.01 \
     --num_batches_per_eval=10 \
-    --lambda=0
-
-
+    --lambda=0 \
+    "$@"
