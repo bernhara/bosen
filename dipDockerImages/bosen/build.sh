@@ -97,4 +97,10 @@ do
     build_arg_switch_list="${build_arg_switch_list} --build-arg ${a}"
 done
     
-docker build  --force-rm --pull -t "${image_name}:${image_tag}" --file "${HERE}/Dockerfile.${architecture}" ${build_arg_switch_list} ${HERE}
+docker build  \
+    --force-rm \
+    --pull \
+    -t "${image_name}:${image_tag}" \
+    --file "${HERE}/Dockerfile.${architecture}" \
+    ${build_arg_switch_list} \
+    ${HERE}
