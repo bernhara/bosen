@@ -98,7 +98,19 @@ if __name__ == "__main__":
             "properties": {
                 "@timestamp": {
                     "type": "date"
-                },
+                    },
+                "distance": {
+                    "type": "float"
+                    },
+                "worker_name": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                            }
+                        }
+                    }                             
 #                 "comment": {
 #                     "type": "text",
 #                     "fields": {
@@ -107,9 +119,6 @@ if __name__ == "__main__":
 #                             "ignore_above": 256
 #                             }
 #                         }
-#                     },
-#                 "distance": {
-#                     "type": "float"
 #                     },
 #                 "label": {
 #                     "type": "text",
@@ -132,15 +141,7 @@ if __name__ == "__main__":
 #                 "test_time": {
 #                     "type": "date"
 #                      },
-#                 "worker_name": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     }
+
                 }
             }
         }            
