@@ -11,6 +11,13 @@
 
 architecture=$( uname -m )
 
+: ${_use_http_proxy_from_env:=false}
+if [ -n "${USE_PROXY_ENV}" ]
+then
+    _use_http_proxy_from_env=true
+fi
+
+
 rm -rf "${tmp_root}"
 mkdir -p "${tmp_root}/home/dip"
 mkdir -p "${tmp_root}/home/dip/bin"
@@ -39,8 +46,50 @@ image_name="${REGISTRY_HOSTNAME_IMAGE_NAME_PREFIX}/dip/mlr-worker"
 image_tag="${architecture}-latest"
 
 build_arg_element=""
-build_arg_element="${build_arg_element} http_proxy=http://proxy:3128"
-build_arg_element="${build_arg_element} https_proxy=http://proxy:3128"
+
+if [ -n "${_use_http_proxy_from_env}"
+then
+
+    http_proxy_to_use=$(
+	if [ -n "${HTTP_PROXY}" ]
+	then
+	    echo "${HTTP_PROXY}"
+	else
+	if [ -n "${http_proxy}" ]
+	    echo "${http_proxy}"
+	else
+	    echo ''
+	fi
+    )
+    if [ -z "${http_proxy_to_use}" ]
+	echo "No value provided for HTTP_PROXY" 1>&2
+	exit 1
+    fi
+
+    https_proxy_to_use=$(
+	if [ -n "${HTTPS_PROXY}" ]
+	then
+	    echo "${HTTPS_PROXY}"
+	else
+	if [ -n "${https_proxy}" ]
+	    echo "${https_proxy}"
+	else
+	    # We use the same as for HTTP
+	    echo "${http_proxy_to_use}"
+	fi
+    )
+	    
+	    
+    if [ -n "${http_proxy_to_use}" ]
+    then
+	build_arg_element="${build_arg_element} http_proxy=${http_proxy_to_use}"
+    fi
+
+    if [ -n "${https_proxy_to_use}" ]
+    then
+	build_arg_element="${build_arg_element} https_proxy=${https_proxy_to_use}"
+    fi
+fi
 
 build_arg_switch_list=""
 for a in ${build_arg_element}
