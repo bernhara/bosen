@@ -6,12 +6,12 @@ import argparse
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
-# by default we connect to localhost:9200
-es = Elasticsearch()
-
-# create an index in elasticsearch, ignore status code 400 (index already exists)
-es.indices.create(index='my-index', ignore=400)
-{'acknowledged': True, 'shards_acknowledged': True, 'index': 'my-index'}
+# # by default we connect to localhost:9200
+# es = Elasticsearch()
+# 
+# # create an index in elasticsearch, ignore status code 400 (index already exists)
+# es.indices.create(index='my-index', ignore=400)
+# {'acknowledged': True, 'shards_acknowledged': True, 'index': 'my-index'}
 
 # datetimes will be serialized
 
@@ -30,8 +30,15 @@ def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comm
     
 def getElasticSampleIndex ():
     
-    n = datetime.now()
+    now = datetime.now()
+    year = n.year
+    month = n.month
+    day = n.day
+    
+    z = '{:-%Y-%m-%d}'.format(n)
+    
     tt = n.timetuple()
+    print (tt)
     
 
 
@@ -50,12 +57,11 @@ def getElasticSampleIndex ():
 # # but not deserialized
 # es.get(index="my-index", id=42)['_source']
 
-
 if __name__ == "__main__":
     # get trace logger and set level
     tracer = logging.getLogger("elasticsearch.trace")
     tracer.setLevel(logging.INFO)
-    tracer.addHandler(logging.FileHandler("/tmp/es_trace.log"))
+    tracer.addHandler(logging.FileHandler("./es_trace.log"))
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -80,28 +86,31 @@ if __name__ == "__main__":
     
 
     index = getElasticSampleIndex()
-    body = getElasticDataBody("test worker", 12.7)
+    es.indices.create(index=index, ignore=400)
+      
+    body = getElasticSampleDataBody("test worker", 12.7)
     
     es.index(index=index, body=body)
+
     
     sys.exit(1)
 
 
-    # we load the repo and all commits
-    load_repo(es, path=args.path)
-
-    # run the bulk operations
-    success, _ = bulk(es, UPDATES, index="git")
-    print("Performed %d actions" % success)
-
-    # we can now make docs visible for searching
-    es.indices.refresh(index="git")
-
-    # now we can retrieve the documents
-    initial_commit = es.get(index="git", id="20fbba1230cabbc0f4644f917c6c2be52b8a63e8")
-    print(
-        "%s: %s" % (initial_commit["_id"], initial_commit["_source"]["committed_date"])
-    )
-
-    # and now we can count the documents
-    print(es.count(index="git")["count"], "documents in index")
+#     # we load the repo and all commits
+#     load_repo(es, path=args.path)
+# 
+#     # run the bulk operations
+#     success, _ = bulk(es, UPDATES, index="git")
+#     print("Performed %d actions" % success)
+# 
+#     # we can now make docs visible for searching
+#     es.indices.refresh(index="git")
+# 
+#     # now we can retrieve the documents
+#     initial_commit = es.get(index="git", id="20fbba1230cabbc0f4644f917c6c2be52b8a63e8")
+#     print(
+#         "%s: %s" % (initial_commit["_id"], initial_commit["_source"]["committed_date"])
+#     )
+# 
+#     # and now we can count the documents
+#     print(es.count(index="git")["count"], "documents in index")
