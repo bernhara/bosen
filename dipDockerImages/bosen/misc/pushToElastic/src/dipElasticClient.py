@@ -28,19 +28,17 @@ def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comm
        "@timestamp": datetime.now()
     }
     
-def getElasticSampleIndex ():
+def getElasticSampleIndex (index_prefix='dip-distance-'):
     
     now = datetime.now()
-    year = n.year
-    month = n.month
-    day = n.day
+   
+    index_suffix = '{:%Y-%m-%d}'.format(now)
     
-    z = '{:-%Y-%m-%d}'.format(n)
+    index = index_prefix + index_suffix
     
-    tt = n.timetuple()
-    print (tt)
+    return index
     
-
+ 
 
 
 
