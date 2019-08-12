@@ -137,6 +137,8 @@ void MLRSGDSolver::MiniBatchSGD(
           &w_cache_[i]);
     }
   }
+
+  SaveWeights ("/tmp/minibatch.svm");
 }
 
 void MLRSGDSolver::SaveWeights(const std::string& filename) const {
