@@ -66,7 +66,7 @@ DEFINE_int32(w_table_num_cols, 1000000,
     "# of columns in w_table. Only used for binary LR.");
 
 // DIP added parameters
-DEFINE_string(minibatch_weight_dump_file, "", "If defined, the currently computed weights during mini-match are dumped to this file.");
+DEFINE_string(DIP_minibatch_weight_dump_file, "", "If defined, the currently computed weights during mini-match are dumped to this file at each mini-batch end.");
 
 const int32_t kDenseRowFloatTypeID = 0;
 
