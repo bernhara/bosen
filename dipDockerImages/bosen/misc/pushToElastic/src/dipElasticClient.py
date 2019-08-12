@@ -30,6 +30,69 @@ def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comm
     
     return body
 
+def createElasticsearchIndexWithMapping (es, index):
+    
+    create_index_body = {
+    "settings": {
+        # just one shard, no replicas for testing
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+    },
+         
+    "mappings": {
+        "properties": {
+            "@timestamp": {
+                "type": "date"
+                },
+            "distance": {
+                "type": "float"
+                },
+            "worker_name": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 64
+                        }
+                    }
+                }                             
+#                 "comment": {
+#                     "type": "text",
+#                     "fields": {
+#                         "keyword": {
+#                             "type": "keyword",
+#                             "ignore_above": 256
+#                             }
+#                         }
+#                     },
+#                 "label": {
+#                     "type": "text",
+#                     "fields": {
+#                         "keyword": {
+#                             "type": "keyword",
+#                             "ignore_above": 256
+#                             }
+#                         }
+#                     },
+#                 "sample_date": {
+#                     "type": "text",
+#                     "fields": {
+#                         "keyword": {
+#                             "type": "keyword",
+#                             "ignore_above": 256
+#                             }
+#                         }
+#                     },
+#                 "test_time": {
+#                     "type": "date"
+#                      },
+            }
+        }
+    }
+        
+    es.indices.create(index=index, body=create_index_body)
+
+
 def getElasticSampleIndex (index_prefix='dip-distance-'):
     
     now = datetime.now()
@@ -39,8 +102,22 @@ def getElasticSampleIndex (index_prefix='dip-distance-'):
     index = index_prefix + index_suffix
     
     return index
+
+    
+
+def putDistanceToEs (es, worker_name, distance):
+    
     
  
+    index = getElasticSampleIndex()
+    index_exists = es.indices.exists(index=index)
+    if not index_exists:
+        # if it does not exist, create is previouly to ensure correct mapping
+        createElasticsearchIndexWithMapping (es, index)
+      
+    body = getElasticSampleDataBody(worker_name, distance)
+    
+    es.index(index=index, body=body)
 
 
 
@@ -84,79 +161,9 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
+    putDistanceToEs (es, "test_worker", 7.4)
 
-    index = getElasticSampleIndex()
-    
-    create_index_body = {
-        "settings": {
-            # just one shard, no replicas for testing
-            "number_of_shards": 1,
-            "number_of_replicas": 0,
-        },
-             
-        "mappings": {
-            "properties": {
-                "@timestamp": {
-                    "type": "date"
-                    },
-                "distance": {
-                    "type": "float"
-                    },
-                "worker_name": {
-                    "type": "text",
-                    "fields": {
-                        "keyword": {
-                            "type": "keyword",
-                            "ignore_above": 64
-                            }
-                        }
-                    }                             
-#                 "comment": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "label": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "sample_date": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "test_time": {
-#                     "type": "date"
-#                      },
-
-                }
-            }
-        }            
-
-    index_exists = es.indices.exists(index=index)
-    if not index_exists:
-        es.indices.create(index=index, body=create_index_body)
-    # es.indices.create(index=index, body=create_index_body, ignore=400)
-      
-    body = getElasticSampleDataBody("test worker", 12.7)
-    
-    es.index(index=index, body=body)
-
-    
-    sys.exit(1)
+    sys.exit(0)
 
 
 #     # we load the repo and all commits
