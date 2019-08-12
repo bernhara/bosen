@@ -62,6 +62,7 @@ then
 	fi
     )
     if [ -z "${http_proxy_to_use}" ]
+    then
 	echo "No value provided for HTTP_PROXY" 1>&2
 	exit 1
     fi
@@ -70,8 +71,7 @@ then
 	if [ -n "${HTTPS_PROXY}" ]
 	then
 	    echo "${HTTPS_PROXY}"
-	else
-	if [ -n "${https_proxy}" ]
+	elif [ -n "${https_proxy}" ]
 	    echo "${https_proxy}"
 	else
 	    # We use the same as for HTTP
