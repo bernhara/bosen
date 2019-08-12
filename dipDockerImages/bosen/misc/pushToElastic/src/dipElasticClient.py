@@ -107,7 +107,7 @@ if __name__ == "__main__":
                     "fields": {
                         "keyword": {
                             "type": "keyword",
-                            "ignore_above": 256
+                            "ignore_above": 64
                             }
                         }
                     }                             
