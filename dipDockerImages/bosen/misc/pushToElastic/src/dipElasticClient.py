@@ -28,6 +28,8 @@ def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comm
        "@timestamp": datetime.now()
     }
     
+    return body
+
 def getElasticSampleIndex (index_prefix='dip-distance-'):
     
     now = datetime.now()
