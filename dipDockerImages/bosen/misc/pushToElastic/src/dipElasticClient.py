@@ -86,6 +86,75 @@ if __name__ == "__main__":
     
 
     index = getElasticSampleIndex()
+    
+    create_index_body = {
+        "settings": {
+            # just one shard, no replicas for testing
+            "number_of_shards": 1,
+            "number_of_replicas": 0,
+            # custom analyzer for analyzing file paths
+            "analysis": {
+                "analyzer": {
+                    "file_path": {
+                        "type": "custom",
+                        "tokenizer": "path_hierarchy",
+                        "filter": ["lowercase"],
+                    }
+                }
+            },
+        },
+             
+        "mapping": {
+            "properties": {
+                "@timestamp": {
+                    "type": "date"
+                },
+                "comment": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                            }
+                        }
+                    },
+                "distance": {
+                    "type": "float"
+                    },
+                "label": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                            }
+                        }
+                    },
+                "sample_date": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                            }
+                        }
+                    },
+                "test_time": {
+                    "type": "date"
+                     },
+                "worker_name": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                            }
+                        }
+                    }
+                }
+            }
+        }            
+
     es.indices.create(index=index, ignore=400)
       
     body = getElasticSampleDataBody("test worker", 12.7)
