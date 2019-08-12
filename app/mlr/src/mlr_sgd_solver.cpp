@@ -12,6 +12,10 @@
 #include <ml/include/ml.hpp>
 #include <io/general_fstream.hpp>
 
+#include <gflags/gflags.h>
+DECLARE_string(minibatch_weight_dump_file);
+
+
 namespace mlr {
 
 MLRSGDSolver::MLRSGDSolver(const MLRSGDSolverConfig& config) :
@@ -138,7 +142,10 @@ void MLRSGDSolver::MiniBatchSGD(
     }
   }
 
-  SaveWeights ("/tmp/minibatch.svm");
+  // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
+  if (! FLAGS_minibatch_weight_dump_file.empty() ) {
+    SaveWeights (FLAGS_minibatch_weight_dump_file);
+  }
 }
 
 void MLRSGDSolver::SaveWeights(const std::string& filename) const {

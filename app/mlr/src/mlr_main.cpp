@@ -65,10 +65,13 @@ DEFINE_int32(num_secs_per_checkpoint, 600, "# of seconds between each saving "
 DEFINE_int32(w_table_num_cols, 1000000,
     "# of columns in w_table. Only used for binary LR.");
 
+// DIP added parameters
+DEFINE_string(minibatch_weight_dump_file, "", "If defined, the currently computed weights during mini-match are dumped to this file.");
+
 const int32_t kDenseRowFloatTypeID = 0;
 
 int main(int argc, char *argv[]) {
-  GFLAGS_NAMESPACE::ParseCommandLineFlags(&argc, &argv, true);
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
   google::InitGoogleLogging(argv[0]);
 
   //STATS_APP_LOAD_DATA_BEGIN();
