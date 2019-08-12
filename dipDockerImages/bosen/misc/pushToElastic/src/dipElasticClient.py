@@ -1,3 +1,5 @@
+import sys
+
 import logging
 import argparse
 
@@ -14,7 +16,7 @@ es.indices.create(index='my-index', ignore=400)
 # datetimes will be serialized
 
 
-def getElasticDataBody (worker_name, distance, sample_date="not set", comment="no comment!"):
+def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comment="no comment!"):
     
     body={
        "worker_name": worker_name,
@@ -26,21 +28,27 @@ def getElasticDataBody (worker_name, distance, sample_date="not set", comment="n
        "@timestamp": datetime.now()
     }
     
-body = getElasticDataBody("test worker", 12.7)
-es.index(index="my-index", id=42, body={"any": "data", "@timestamp": datetime.now()})
+def getElasticSampleIndex ():
+    
+    n = datetime.now()
+    tt = n.timetuple()
+    
 
 
-{'_index': 'my-index',
- '_type': '_doc',
- '_id': '42',
- '_version': 1,
- 'result': 'created',
- '_shards': {'total': 2, 'successful': 1, 'failed': 0},
- '_seq_no': 0,
- '_primary_term': 1}
 
-# but not deserialized
-es.get(index="my-index", id=42)['_source']
+
+
+# {'_index': 'my-index',
+#  '_type': '_doc',
+#  '_id': '42',
+#  '_version': 1,
+#  'result': 'created',
+#  '_shards': {'total': 2, 'successful': 1, 'failed': 0},
+#  '_seq_no': 0,
+#  '_primary_term': 1}
+
+# # but not deserialized
+# es.get(index="my-index", id=42)['_source']
 
 
 if __name__ == "__main__":
@@ -57,18 +65,27 @@ if __name__ == "__main__":
         default="s-ku2raph:9200",
         help="The elasticsearch host you wish to connect to. (Default: s-ku2raph:9200)",
     )
-    parser.add_argument(
-        "-p",
-        "--path",
-        action="store",
-        default=None,
-        help="Path to git repo. Commits used as data to load into Elasticsearch. (Default: None)",
-    )
+#     parser.add_argument(
+#         "-p",
+#         "--path",
+#         action="store",
+#         default=None,
+#         help="Path to git repo. Commits used as data to load into Elasticsearch. (Default: None)",
+#     )
 
     args = parser.parse_args()
 
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
+    
+
+    index = getElasticSampleIndex()
+    body = getElasticDataBody("test worker", 12.7)
+    
+    es.index(index=index, body=body)
+    
+    sys.exit(1)
+
 
     # we load the repo and all commits
     load_repo(es, path=args.path)
