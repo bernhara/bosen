@@ -13,7 +13,7 @@
 #include <io/general_fstream.hpp>
 
 #include <gflags/gflags.h>
-DECLARE_string(minibatch_weight_dump_file);
+DECLARE_string(DIP_minibatch_weight_dump_file);
 
 
 namespace mlr {
@@ -143,8 +143,8 @@ void MLRSGDSolver::MiniBatchSGD(
   }
 
   // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
-  if (! FLAGS_minibatch_weight_dump_file.empty() ) {
-    SaveWeights (FLAGS_minibatch_weight_dump_file);
+  if (! FLAGS_DIP_minibatch_weight_dump_file.empty() ) {
+    SaveWeights (FLAGS_DIP_minibatch_weight_dump_file);
   }
 }
 
