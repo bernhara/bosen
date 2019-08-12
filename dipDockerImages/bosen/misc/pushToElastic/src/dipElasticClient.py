@@ -120,20 +120,6 @@ def putDistanceToEs (es, worker_name, distance):
     es.index(index=index, body=body)
 
 
-
-
-# {'_index': 'my-index',
-#  '_type': '_doc',
-#  '_id': '42',
-#  '_version': 1,
-#  'result': 'created',
-#  '_shards': {'total': 2, 'successful': 1, 'failed': 0},
-#  '_seq_no': 0,
-#  '_primary_term': 1}
-
-# # but not deserialized
-# es.get(index="my-index", id=42)['_source']
-
 if __name__ == "__main__":
     # get trace logger and set level
     tracer = logging.getLogger("elasticsearch.trace")
@@ -164,23 +150,3 @@ if __name__ == "__main__":
     putDistanceToEs (es, "test_worker", 7.4)
 
     sys.exit(0)
-
-
-#     # we load the repo and all commits
-#     load_repo(es, path=args.path)
-# 
-#     # run the bulk operations
-#     success, _ = bulk(es, UPDATES, index="git")
-#     print("Performed %d actions" % success)
-# 
-#     # we can now make docs visible for searching
-#     es.indices.refresh(index="git")
-# 
-#     # now we can retrieve the documents
-#     initial_commit = es.get(index="git", id="20fbba1230cabbc0f4644f917c6c2be52b8a63e8")
-#     print(
-#         "%s: %s" % (initial_commit["_id"], initial_commit["_source"]["committed_date"])
-#     )
-# 
-#     # and now we can count the documents
-#     print(es.count(index="git")["count"], "documents in index")
