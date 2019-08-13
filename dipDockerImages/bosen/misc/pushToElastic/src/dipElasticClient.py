@@ -19,9 +19,9 @@ from elasticsearch import Elasticsearch
 
 launch_timestamp_dt = datetime.now()
 
-def getElasticSampleIndex (index_prefix='dip-distance-'):
+def getElasticSampleIndex (index_prefix='dip-distance-', sample_dt):
     
-    index_suffix = '{:%Y-%m-%d}'.format(launch_timestamp_dt)
+    index_suffix = '{:%Y-%m-%d}'.format(sample_dt)
     
     index = index_prefix + index_suffix
     
@@ -39,7 +39,7 @@ def getElasticTimestamp (dt_value):
     return timestamp
 
 
-def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comment="no comment!"):
+def getElasticSampleDataBody (worker_name, distance, sample_dt, comment="no comment!"):
     
     global launch_timestamp_dt
     
@@ -47,10 +47,10 @@ def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comm
        "worker_name": worker_name,
        "distance": distance,
        "label": "label for " + worker_name,
-       "sample_date": sample_date,
+       "sample_date": "is this field useful??",
        "test_time": launch_timestamp_dt,
        "comment": comment,
-       "@timestamp": getElasticTimestamp(launch_timestamp_dt)
+       "@timestamp": getElasticTimestamp(sample_dt)
     }
     
     return body
@@ -118,17 +118,17 @@ def createElasticsearchIndexWithMapping (es, index):
     es.indices.create(index=index, body=create_index_body)
 
 
-def putDistanceToEs (es, worker_name, distance):
+def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
     
     
  
-    index = getElasticSampleIndex()
+    index = getElasticSampleIndex(index_prefix, sample_dt)
     index_exists = es.indices.exists(index=index)
     if not index_exists:
         # if it does not exist, create is previouly to ensure correct mapping
         createElasticsearchIndexWithMapping (es, index)
       
-    body = getElasticSampleDataBody(worker_name, distance)
+    body = getElasticSampleDataBody(worker_name, distance, sample_dt)
     
     es.index(index=index, body=body)
 
@@ -198,6 +198,6 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
-    putDistanceToEs (es, args.worker_name, args.distance)
+    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=args.distance, sample_dt=launch_timestamp_dt)
 
     sys.exit(0)
