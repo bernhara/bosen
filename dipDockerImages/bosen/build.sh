@@ -37,6 +37,19 @@ cp -a \
     "${HERE}/testit.sh" \
     "${tmp_root}/home/dip/bin"
 
+cp -a -r \
+    "${HERE}/misc" \
+    "${tmp_root}/home/dip/bin/misc"
+
+VENVs=$(
+    find "${tmp_root}/home/dip/bin/misc/" -name ".venv" -print
+)
+for venv in ${VENVs}
+do
+    rm -rf ${venv}/*
+    rm -f ${venv}/../Pipfile.lock
+done
+
 
 #
 # build image
@@ -47,15 +60,15 @@ image_tag="${architecture}-latest"
 
 build_arg_element=""
 
-if [ -n "${_use_http_proxy_from_env}"
+if [ -n "${_use_http_proxy_from_env}" ]
 then
 
     http_proxy_to_use=$(
 	if [ -n "${HTTP_PROXY}" ]
 	then
 	    echo "${HTTP_PROXY}"
-	else
-	if [ -n "${http_proxy}" ]
+	elif [ -n "${http_proxy}" ]
+	then
 	    echo "${http_proxy}"
 	else
 	    echo ''
@@ -72,6 +85,7 @@ then
 	then
 	    echo "${HTTPS_PROXY}"
 	elif [ -n "${https_proxy}" ]
+	then
 	    echo "${https_proxy}"
 	else
 	    # We use the same as for HTTP
