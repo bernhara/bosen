@@ -127,6 +127,7 @@ if __name__ == "__main__":
     tracer.addHandler(logging.FileHandler("./es_trace.log"))
 
     parser = argparse.ArgumentParser()
+    
     parser.add_argument(
         "-H",
         "--host",
@@ -134,6 +135,34 @@ if __name__ == "__main__":
         default="s-ku2raph:9200",
         help="The elasticsearch host you wish to connect to. (Default: s-ku2raph:9200)",
     )
+    
+    parser.add_argument(
+        "-i",
+        "--index_prefix",
+        action="store",
+        default="dip-distance-",
+        help="The index prefix used to insert new records. (Default: dip-distance-)",
+    )
+    
+    parser.add_argument(
+        "-d",
+        "--distance",
+        action="store",
+        name="distance",
+        type=float,
+        required=True,
+        help="The new distance to record.",
+    )
+    
+    parser.add_argument(
+        "-t",
+        "--timestamp",
+        action="store",
+        name="timestamp",
+        required=False,
+        help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
+    )    
+        
 #     parser.add_argument(
 #         "-p",
 #         "--path",
@@ -147,6 +176,6 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
-    putDistanceToEs (es, "test_worker", 7.4)
+    putDistanceToEs (es, "test_worker", args.distance)
 
     sys.exit(0)
