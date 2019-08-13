@@ -4,4 +4,8 @@
 	<comment>TbD</comment>
 	<projects>
 	</projects>
+	</buildSpec>
+	<natures>
+		<nature>org.python.pydev.pythonNature</nature>
+	</natures>
 </projectDescription>
