@@ -15,17 +15,42 @@ from elasticsearch import Elasticsearch
 
 # datetimes will be serialized
 
+# globals
+
+launch_timestamp_dt = datetime.now()
+
+def getElasticSampleIndex (index_prefix='dip-distance-'):
+    
+    index_suffix = '{:%Y-%m-%d}'.format(launch_timestamp_dt)
+    
+    index = index_prefix + index_suffix
+    
+    return index
+
+def getElasticTimestamp (dt_value):
+    
+    # SEE: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html#built-in-date-formats
+    # Used format: strict_date_time (yyyy-MM-dd'T'HH:mm:ss.SSSZZ)
+    
+    iso_dt_value = dt_value.isoformat(sep='T', timespec='milliseconds')
+    
+    timestamp = iso_dt_value + 'ZZ'
+    
+    return timestamp
+
 
 def getElasticSampleDataBody (worker_name, distance, sample_date="not set", comment="no comment!"):
+    
+    global launch_timestamp_dt
     
     body={
        "worker_name": worker_name,
        "distance": distance,
        "label": "label for " + worker_name,
        "sample_date": sample_date,
-       "test_time": datetime.now(),
+       "test_time": launch_timestamp_dt,
        "comment": comment,
-       "@timestamp": datetime.now()
+       "@timestamp": getElasticTimestamp(launch_timestamp_dt)
     }
     
     return body
@@ -93,18 +118,6 @@ def createElasticsearchIndexWithMapping (es, index):
     es.indices.create(index=index, body=create_index_body)
 
 
-def getElasticSampleIndex (index_prefix='dip-distance-'):
-    
-    now = datetime.now()
-   
-    index_suffix = '{:%Y-%m-%d}'.format(now)
-    
-    index = index_prefix + index_suffix
-    
-    return index
-
-    
-
 def putDistanceToEs (es, worker_name, distance):
     
     
@@ -148,7 +161,7 @@ if __name__ == "__main__":
         "-d",
         "--distance",
         action="store",
-        name="distance",
+        dest="distance",
         type=float,
         required=True,
         help="The new distance to record.",
@@ -158,10 +171,19 @@ if __name__ == "__main__":
         "-t",
         "--timestamp",
         action="store",
-        name="timestamp",
+        dest="timestamp",
         required=False,
         help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
-    )    
+    )
+    
+    parser.add_argument(
+        "-w",
+        "--worker_name",
+        action="store",
+        dest="worker_name",
+        default="test_worker",
+        help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
+    )        
         
 #     parser.add_argument(
 #         "-p",
@@ -176,6 +198,6 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
-    putDistanceToEs (es, "test_worker", args.distance)
+    putDistanceToEs (es, args.worker_name, args.distance)
 
     sys.exit(0)
