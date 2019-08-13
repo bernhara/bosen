@@ -1,0 +1,27 @@
+# -*- mode: indented-text -*-
+
+#
+# copy everything from the prebuilt root to /
+#
+COPY tmp_root /
+
+# mandatory for pip
+ENV LC_ALL=en_US.utf8 LANG=en_US.utf8
+RUN \
+    /usr/bin/python36 -m pip --no-cache-dir install pipenv
+
+RUN \
+    cd /home/dip/bin/misc/pushToElastic && \
+    PIPENV_COLORBLIND=yes pipenv install --deploy --python /usr/bin/python3.6 && \
+    rm -r ${HOME}/.cache
+
+#
+# set default Python to the one in the created venv
+#
+ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:$PATH
+
+CMD ["/home/dip/bin/testit.sh"]
+
+ENV ELASTICSEARCH_LOG_URL=
+
+ENV MLR_MAIN=/home/dip/bin/mlr_main NB_THREADS=2 GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0
