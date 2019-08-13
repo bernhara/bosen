@@ -32,27 +32,25 @@ RUN \
     rm -rf /tmp/* && \
     rm -f /core
 
-ENV toto=titi2
-
+#
+# copy everything from the prebuilt root to /
+#
 COPY tmp_root /
 
+# mandatory for pip
 ENV LC_ALL=en_US.utf8 LANG=en_US.utf8
-
 RUN \
-    /usr/bin/python36 -m pip install pipenv
+    /usr/bin/python36 -m pip --no-cache-dir install pipenv
 
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
-    PIPENV_COLORBLIND=yes pipenv install --deploy --python /usr/bin/python3.6
-
-RUN \
-    mkdir /tmp/ZZ1 && \
-    mkdir /ZZ2 && \
-    cp /home/dip/bin/misc/pushToElastic/Pipfile /tmp/ZZ1 && \
-    cd /tmp/ZZ1 && \
     PIPENV_COLORBLIND=yes pipenv install --deploy --python /usr/bin/python3.6 && \
-    WORKON_HOME=/VENV PIPENV_COLORBLIND=yes pipenv install --deploy --python /usr/bin/python3.6 && \
-    ls -lR /ZZ2
+    rm -r ${HOME}/.cache
+
+#
+# set default Python to the one in the created venv
+#
+ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:$PATH
 
 CMD ["/home/dip/bin/testit.sh"]
 
