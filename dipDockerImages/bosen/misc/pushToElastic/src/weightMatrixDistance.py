@@ -1,8 +1,3 @@
-'''
-Created on 6 août 2019
-
-@author: orba6563
-'''
 
 # TEST
 import numpy as np
