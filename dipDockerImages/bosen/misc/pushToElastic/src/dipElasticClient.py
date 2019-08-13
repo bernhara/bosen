@@ -17,9 +17,9 @@ from elasticsearch import Elasticsearch
 
 # globals
 
-launch_timestamp_dt = datetime.now()
+launch_timestamp_dt = datetime.utcnow()
 
-def getElasticSampleIndex (index_prefix='dip-distance-', sample_dt):
+def getElasticSampleIndex (sample_dt, index_prefix='dip-distance-'):
     
     index_suffix = '{:%Y-%m-%d}'.format(sample_dt)
     
@@ -122,7 +122,7 @@ def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
     
     
  
-    index = getElasticSampleIndex(index_prefix, sample_dt)
+    index = getElasticSampleIndex(sample_dt, index_prefix)
     index_exists = es.indices.exists(index=index)
     if not index_exists:
         # if it does not exist, create is previouly to ensure correct mapping
