@@ -111,10 +111,27 @@ do
     build_arg_switch_list="${build_arg_switch_list} --build-arg ${a}"
 done
     
+#
+# generate Dockerfile
+#
+
+docker_file_components=$(
+    (
+	ls -1 ${HERE}/*-Dockerfile.${architecture}
+	ls -1 ${HERE}/*-Dockerfile.noarch
+    ) | \
+	sort -n
+)
+
+for i in ${docker_file_components}
+do
+    cat $i
+done > "${HERE}/Dockerfile-merged.tmp"
+
 docker build  \
     --force-rm \
     --pull \
     -t "${image_name}:${image_tag}" \
-    --file "${HERE}/Dockerfile.${architecture}" \
     ${build_arg_switch_list} \
+    --file "${HERE}/Dockerfile-merged.tmp" \
     ${HERE}
