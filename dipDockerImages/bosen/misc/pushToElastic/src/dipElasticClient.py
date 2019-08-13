@@ -168,7 +168,7 @@ if __name__ == "__main__":
     )
     
     parser.add_argument(
-        "-t",
+        "-s",
         "--timestamp",
         action="store",
         dest="timestamp",
@@ -183,7 +183,17 @@ if __name__ == "__main__":
         dest="worker_name",
         default="test_worker",
         help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
-    )        
+    )
+    
+    parser.add_argument(
+        "-t",
+        "--timeout",
+        type=float,
+        action="store",
+        dest="timeout",
+        default="1.0",
+        help="Timeout for interactions with Elasticsearch (Not Yet Implemented)."
+    )    
         
 #     parser.add_argument(
 #         "-p",
