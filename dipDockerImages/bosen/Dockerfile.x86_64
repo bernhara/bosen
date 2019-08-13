@@ -1,8 +1,8 @@
 # -*- mode: indented-text -*-
 
-FROM centos:7
 LABEL maintainer="BERNHARD Raphael <raphael.bernhard@orange.com>"
 
+FROM centos:7
 RUN \
     yum upgrade -y \
     && \
