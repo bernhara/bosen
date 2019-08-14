@@ -164,26 +164,9 @@ void MLRSGDSolver::MiniBatchSGD(
     timestamp_suffix << std::setw(20) << std::setfill('0');
     timestamp_suffix << printable_duration_to_epoch;
 
-    //const std::time_t time_since_epoch = std::chrono::system_clock::now().time_since_epoch();
-    //uint64_t tt = std::chrono::duration_cast<std::chrono::milliseconds>(time_since_epoch).count();
+    const std::string file_suffix = timestamp_suffix.str() + '_' + thread_name.str();
 
-    // _int64 microseconds_since_epoch = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
-    /*
-#include <chrono>
-#include <cstdint>
-#include <iostream>
-
-    uint64_t timeSinceEpochMillisec() {
-      using namespace std::chrono;
-      return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    }
-    */
-
- 
-    std::stringstream file_suffix;
-    //!!file_suffix << std::setw(10) << std::setfill('0') << minibatch_counter;
-    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str() + '_' + thread_name.str() + '_' + timestamp_suffix.str();
+    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix;
 
     SaveWeights (minibatch_weight_file_name);
     //!! minibatch_counter++;
