@@ -59,13 +59,13 @@ do
 	    #
 	    s_part="${file_timestamp_from_epoch_ns::-6}"
 	    ns_part="${file_timestamp_from_epoch_ns: -6}"
-	    timestamp_since_epoch="${s_part}.${ns_part}"
+	    utc_timestamp_since_epoch="${s_part}.${ns_part}"
 
-	    elastic_timestamp=$(
-		date "--date=@${timestamp_since_epoch}" --utc '+%Y-%m-%dT%H:%M:%S.%NZZ'
+	    hm_timestamp=$(
+		date "--date=@${utc_timestamp_since_epoch}" --utc '+%Y-%m-%dT%H:%M:%S.%NZZ'
 	    )
 
-	    elastic_timestamp=${timestamp_since_epoch}
+	    elastic_timestamp=${utc_timestamp_since_epoch}
 
 	    ${PYTHON} ${ZZ} \
 		--host=http://s-eunuc:9200 \
