@@ -182,7 +182,7 @@ if __name__ == "__main__":
         action="store",
         dest="worker_name",
         default="test_worker",
-        help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
+        help="The name of the client."
     )
     
     parser.add_argument(
