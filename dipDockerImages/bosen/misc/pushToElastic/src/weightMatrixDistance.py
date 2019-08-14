@@ -37,6 +37,11 @@ feature_dim: 54
 0:-0.0233188 1:0.0016534 2:0.0103553 3:-0.0114836 4:-0.00400769 5:-0.0185372 6:0.00865482 7:-0.0152054 8:-0.0165118 9:-0.0151924 10:-0.00986364 11:0 12:-0.00714924 13:0.00862953 14:0 15:0 16:0 17:0 18:0 19:0 20:0 21:0 22:0 23:0.00722965 24:0 25:-0.00143347 26:0 27:0 28:0 29:0 30:0 31:0 32:0 33:0 34:0 35:0 36:-0.00279719 37:0 38:0 39:0 40:0 41:0 42:-0.00423359 43:-0.00281385 44:0 45:-0.0014409 46:-0.002894 47:0 48:0 49:0 50:0 51:0 52:0 53:0
 0:0.00144582 1:0.00957494 2:-0.00953794 3:-0.00304181 4:-0.00462175 5:-0.00699856 6:0.000492702 7:0.0122706 8:0.00845034 9:-0.00784991 10:-0.00986364 11:0 12:-0.00714924 13:-0.00137047 14:0 15:0 16:0 17:0 18:0 19:0 20:0 21:0 22:0 23:-0.00277035 24:0 25:-0.00143347 26:0 27:0 28:0 29:0 30:0 31:0 32:0 33:0 34:0 35:0 36:-0.00279719 37:0 38:0 39:0 40:0 41:0 42:-0.00423359 43:-0.00281385 44:0 45:-0.0014409 46:-0.002894 47:0 48:0 49:0 50:0 51:0 52:0 53:0'''
 
+#
+# FIXME: end of code which should be removed
+#
+
+
 num_labels, feature_dim, m_string_without_feature_index = tmp_build_real_input_matrix_string(m_string_for_unit_test)
 
 def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_sample):
@@ -48,26 +53,8 @@ def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_
     
     return matrix_as_np_array
 
-sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m_string_without_feature_index)
-
-m1 = m_without_feature_index.splitlines()
-num_labels_line=m1[0]
-feature_dim_line=m1[1]
-
-_, num_labels_str =  num_labels_line.split(':')
-num_labels = int(num_labels_str)
-
-_, feature_dim_str = feature_dim_line.split(':')
-feature_dim = int(feature_dim_str)
-
-matrix_with_feature_index=m1[2:]
-
-svm_matrix_list=''
-for label, l in zip(range(num_labels), matrix_with_feature_index):
-    svm_line=label + ' ' + l
-    svm_matrix_list.append (svm_line)
-
 
 
 if __name__ == '__main__':
-    pass
+    
+    sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m_string_without_feature_index)
