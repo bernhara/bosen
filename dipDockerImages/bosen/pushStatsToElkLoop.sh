@@ -2,13 +2,9 @@
 
 HERE=$( dirname "$0" )
 
-set -x
-
 : ${stat_file_prefix:="/tmp/minibatch_stats_"}
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
-
-exit 1
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
 
