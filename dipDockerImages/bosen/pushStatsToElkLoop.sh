@@ -6,6 +6,8 @@ HERE=$( dirname "$0" )
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${ZZ:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
+: ${WORKER_NAME:="$0"}
+
 _not_ended=true
 
 while ${_not_ended}
@@ -28,20 +30,29 @@ do
 	    # prepare input
 	    #
 	    num_labels=$(
-		sed -n 1p "${stat_file} | cut --fields=2
+		sed -n 1p "${stat_file}" | cut --fields=2
 	    )
 	    feature_dim=$(
 		sed -n 2p "${stat_file}" | cut --fields=2
 	    )
 
 	    matrix_with_features=$(
-		sed -n '3,$p' ${stat_file}
+		sed -n '3,$p' "${stat_file}"
             )
 
-	    num_labels: 7
+	    matrix_without_features=$(
+		sed -e 's/[0-9][0-9]*://g' <<< "${matrix_with_features}"
+	    )
 
 
 	    ${PYTHON} ${ZZ} \
+		--host=http://s-eunuc:9200 \
+		--index_prefix=test-dip-distance- \
+		--timestamp="${file_timestamp}" \
+		--worker_name="${WORKER_NAME} \
+		\
+		--distance=3.5
+	    
 		
 	    
 	done
