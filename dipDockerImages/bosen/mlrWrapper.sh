@@ -7,14 +7,6 @@
 : ${MLR_MAIN:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
 : ${TRAINING_TIMEOUT:=0}
 
-: ${PUSH_STATS_TO_ELK:=''}
-if [ -z "${PUSH_STATS_TO_ELK}" ]
-then
-    _push_stats_to_elk=false
-else
-    _push_stats_to_elk=true
-fi
-
 #
 # force some system limits
 #
@@ -113,17 +105,7 @@ do
     fi
 done
 
-#
-# args for stats
-#
-
-if ${_push_stats_to_elk}
-then
-    : ${DIP_minibatch_weight_dump_file_prefix:="/tmp/minibatch_stats_"}
-     mlr_dip_stats_args="--DIP_minibatch_weight_dump_file=${DIP_minibatch_weight_dump_file_prefix}"
-fi
-
-mlr_launch_args="${mlr_launch_default_args} ${mlr_dip_stats_args} $@"
+mlr_launch_args="${mlr_launch_default_args} $@"
 
 #
 # check for missing args
@@ -236,6 +218,18 @@ then
     exit 1
 fi
 
+
+#
+# args for stats
+#
+
+DIP_minibatch_weight_dump_file=$( getArgValue "--DIP_minibatch_weight_dump_file" ${mlr_launch_args} )
+if [ -n "${DIP_minibatch_weight_dump_file}"
+then
+    _push_stats_to_elk=true
+else
+    _push_stats_to_elk=false
+fi
 
 if [ -n "${VERBOSE}" ]
 then
