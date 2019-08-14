@@ -144,11 +144,26 @@ void MLRSGDSolver::MiniBatchSGD(
 
   // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
   if (! FLAGS_DIP_minibatch_weight_dump_file.empty() ) {
-    static int minibatch_counter = 0;
+    static std::atomic_uint minibatch_counter = 0;
 
+    std::thread::id this_thread_id = std::this_thread::get_id();
+
+
+    /*
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+
+    uint64_t timeSinceEpochMillisec() {
+      using namespace std::chrono;
+      return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    }
+    */
+
+ 
     std::stringstream file_suffix;
     file_suffix << std::setw(10) << std::setfill('0') << minibatch_counter;
-    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str();
+    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str() + '_' + this_thread_id;
 
     SaveWeights (minibatch_weight_file_name);
     minibatch_counter++;
