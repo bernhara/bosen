@@ -20,7 +20,7 @@ do
 	    -f \
 	    "${stat_file_prefix}"* \
 	| \
-	    grep -v "${stat_file_prefix}END"
+	    grep -v "${stat_file_prefix}__END__"
     )
     if [ -z "${stat_file_list}" ]
     then
