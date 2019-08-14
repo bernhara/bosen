@@ -171,6 +171,7 @@ if __name__ == "__main__":
         "-s",
         "--timestamp",
         action="store",
+        type=float,
         dest="timestamp",
         required=False,
         help="The timestamp to be used for inserting the new value. This value should be acceptable for the Pyhton datetime.fromtimestamp function."
@@ -209,7 +210,7 @@ if __name__ == "__main__":
     es = Elasticsearch(args.host)
     
     if args.timestamp:
-        sample_dt=datetime.fromtimestamp(args.timestamp)
+        sample_dt=datetime.fromtimestamp(float(args.timestamp))
     else:
         sample_dt=launch_timestamp_dt
     
