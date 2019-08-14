@@ -157,12 +157,12 @@ void MLRSGDSolver::MiniBatchSGD(
     // get MS since epoch as a uint64
     const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
     const std::chrono::system_clock::duration time_since_epoch = now.time_since_epoch();
-    const auto zz = std::chrono::duration_cast<std::chrono::microseconds>(time_since_epoch);
-    const auto tt = zz.count();
+    const auto duration_to_epoch_ms = std::chrono::duration_cast<std::chrono::microseconds>(time_since_epoch);
+    const auto printable_duration_to_epoch = duration_to_epoch_ms.count();
 
     std::stringstream timestamp_suffix;
     timestamp_suffix << std::setw(20) << std::setfill('0');
-    timestamp_suffix << tt;
+    timestamp_suffix << printable_duration_to_epoch;
 
     //const std::time_t time_since_epoch = std::chrono::system_clock::now().time_since_epoch();
     //uint64_t tt = std::chrono::duration_cast<std::chrono::milliseconds>(time_since_epoch).count();
