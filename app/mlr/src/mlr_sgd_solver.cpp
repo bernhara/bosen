@@ -150,6 +150,7 @@ void MLRSGDSolver::MiniBatchSGD(
 
     std::thread::id this_thread_id = std::this_thread::get_id();
     std::stringstream thread_name;
+    thread_name << std::setw(20) << std::setfill('0');
     thread_name << this_thread_id;
 
     const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
@@ -158,7 +159,8 @@ void MLRSGDSolver::MiniBatchSGD(
     const uint64_t tt = zz.count();
 
     std::stringstream timestamp_suffix;
-    timestamp_suffix << std::setw(10) << std::setfill('0') << tt;
+    timestamp_suffix << std::setw(20) << std::setfill('0');
+    timestamp_suffix << tt;
 
     //const std::time_t time_since_epoch = std::chrono::system_clock::now().time_since_epoch();
     //uint64_t tt = std::chrono::duration_cast<std::chrono::milliseconds>(time_since_epoch).count();
