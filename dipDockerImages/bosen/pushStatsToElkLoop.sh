@@ -6,8 +6,6 @@ HERE=$( dirname "$0" )
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${ZZ:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
-: ${WORKER_NAME:="$0"}
-
 _not_ended=true
 
 while ${_not_ended}
@@ -44,16 +42,19 @@ do
 		sed -e 's/[0-9][0-9]*://g' <<< "${matrix_with_features}"
 	    )
 
+	    # get timestamp from file name
+	    stat_file_suffix="${stat_file#${DIP_minibatch_weight_dump_file_prefix}}"
+	    
+	    file_timestamp_from_epoch_ns="${stat_file_suffix%_*}"
+	    thread_id="${stat_file_suffix#*_}"
 
 	    ${PYTHON} ${ZZ} \
 		--host=http://s-eunuc:9200 \
 		--index_prefix=test-dip-distance- \
 		--timestamp="${file_timestamp}" \
-		--worker_name="${WORKER_NAME} \
+		--worker_name="thread_${thread_id} \
 		\
 		--distance=3.5
-	    
-		
 	    
 	done
 
