@@ -169,12 +169,12 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "-s",
-        "--timestamp_since_epoch",
+        "--utc_timestamp_since_epoch",
         action="store",
         type=float,
         dest="timestamp",
         required=False,
-        help="The timestamp to be used for inserting the new value. This value should be acceptable float for the Pyhton datetime.fromtimestamp function."
+        help="The UTC timestamp to be used for inserting the new value. This value should be acceptable float for the Pyhton datetime.fromtimestamp function."
     )
     
     parser.add_argument(
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     es = Elasticsearch(args.host)
     
     if args.timestamp:
-        sample_dt=datetime.fromtimestamp(float(args.timestamp))
+        sample_dt=datetime.utcfromtimestamp(args.timestamp)
     else:
         sample_dt=launch_timestamp_dt
     
