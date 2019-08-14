@@ -255,9 +255,6 @@ Set PUSH_STATS_TO_ELK_LOOP env var in an approprite way" 1>&2
     fi
 fi
 
-exit 1
-
-
 set -a
 : ${GLOG_logtostderr:=true}
 : ${GLOG_v:=-1}
