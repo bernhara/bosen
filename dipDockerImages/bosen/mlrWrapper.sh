@@ -270,7 +270,7 @@ fi
 
 if ${_push_stats_to_elk}
 then
-    touch "${DIP_minibatch_weight_dump_file_prefix}_END"
+    touch "${DIP_minibatch_weight_dump_file}__END__"
 fi
 
 exit $?
