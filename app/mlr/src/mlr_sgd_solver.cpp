@@ -14,6 +14,9 @@
 
 #include <gflags/gflags.h>
 DECLARE_string(DIP_minibatch_weight_dump_file);
+//#include <thread>
+#include <chrono>
+
 
 
 namespace mlr {
@@ -144,7 +147,29 @@ void MLRSGDSolver::MiniBatchSGD(
 
   // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
   if (! FLAGS_DIP_minibatch_weight_dump_file.empty() ) {
-    SaveWeights (FLAGS_DIP_minibatch_weight_dump_file);
+
+    // compute a unique name for the current thread
+    std::thread::id this_thread_id = std::this_thread::get_id();
+    std::stringstream thread_name;
+    thread_name << std::setw(20) << std::setfill('0');
+    thread_name << this_thread_id;
+
+    // get MS since epoch as a uint64
+    const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
+    const std::chrono::system_clock::duration time_since_epoch = now.time_since_epoch();
+    const auto duration_to_epoch_ms = std::chrono::duration_cast<std::chrono::microseconds>(time_since_epoch);
+    const auto printable_duration_to_epoch = duration_to_epoch_ms.count();
+
+    std::stringstream timestamp_suffix;
+    timestamp_suffix << std::setw(20) << std::setfill('0');
+    timestamp_suffix << printable_duration_to_epoch;
+
+    const std::string file_suffix = timestamp_suffix.str() + '_' + thread_name.str();
+
+    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix;
+
+    SaveWeights (minibatch_weight_file_name);
+    //!! minibatch_counter++;
   }
 }
 
