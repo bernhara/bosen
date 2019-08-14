@@ -169,12 +169,12 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "-s",
-        "--timestamp",
+        "--timestamp_since_epoch",
         action="store",
         type=float,
         dest="timestamp",
         required=False,
-        help="The timestamp to be used for inserting the new value. This value should be acceptable for the Pyhton datetime.fromtimestamp function."
+        help="The timestamp to be used for inserting the new value. This value should be acceptable float for the Pyhton datetime.fromtimestamp function."
     )
     
     parser.add_argument(
