@@ -6,6 +6,7 @@
 
 : ${MLR_MAIN:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
 : ${TRAINING_TIMEOUT:=0}
+: ${PUSH_STATS_TO_ELK_LOOP:='variable PUSH_STATS_TO_ELK_LOOP not defined'}
 
 #
 # force some system limits
@@ -224,7 +225,7 @@ fi
 #
 
 DIP_minibatch_weight_dump_file=$( getArgValue "--DIP_minibatch_weight_dump_file" ${mlr_launch_args} )
-if [ -n "${DIP_minibatch_weight_dump_file}"
+if [ -n "${DIP_minibatch_weight_dump_file}" ]
 then
     _push_stats_to_elk=true
 else
@@ -243,8 +244,15 @@ fi
 
 if ${_push_stats_to_elk}
 then
-    DIP_minibatch_weight_dump_file_prefix="${DIP_minibatch_weight_dump_file_prefix}" \
-    ${HERE}/pushStatsToElkLoop.sh &
+    if [ -x "${PUSH_STATS_TO_ELK_LOOP}" ]
+    then
+	DIP_minibatch_weight_dump_file_prefix="${DIP_minibatch_weight_dump_file_prefix}" \
+	    ${PUSH_STATS_TO_ELK_LOOP} &
+    else
+	echo "Env var PUSH_STATS_TO_ELK_LOOP set to \"${PUSH_STATS_TO_ELK_LOOP}\" which is not an execetable file.
+Set PUSH_STATS_TO_ELK_LOOP env var in an approprite way" 1>&2
+	exit 1
+    fi
 fi
 
 set -a
