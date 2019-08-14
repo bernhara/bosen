@@ -144,7 +144,14 @@ void MLRSGDSolver::MiniBatchSGD(
 
   // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
   if (! FLAGS_DIP_minibatch_weight_dump_file.empty() ) {
-    SaveWeights (FLAGS_DIP_minibatch_weight_dump_file);
+    static int minibatch_counter = 0;
+
+    std::stringstream file_suffix;
+    file_suffix << std::setw(10) << std::setfill('0') << minibatch_counter;
+    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str();
+
+    SaveWeights (minibatch_weight_file_name);
+    minibatch_counter++;
   }
 }
 
