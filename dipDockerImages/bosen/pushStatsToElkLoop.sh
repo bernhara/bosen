@@ -18,8 +18,9 @@ do
 	ls \
 	    -1 \
 	    -f \
-	    --ignore "${DIP_minibatch_weight_dump_file_prefix}END" \
-	    "${DIP_minibatch_weight_dump_file_prefix}"*
+	    "${DIP_minibatch_weight_dump_file_prefix}"* \
+	| \
+	    grep -v "${DIP_minibatch_weight_dump_file_prefix}END"
     )
     if [ -z "${stat_file_list}" ]
     then
