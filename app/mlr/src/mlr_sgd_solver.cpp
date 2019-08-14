@@ -158,7 +158,7 @@ void MLRSGDSolver::MiniBatchSGD(
     const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
     const std::chrono::system_clock::duration time_since_epoch = now.time_since_epoch();
     const auto zz = std::chrono::duration_cast<std::chrono::microseconds>(time_since_epoch);
-    const unsigned long int tt = zz.count();
+    const auto tt = zz.count();
 
     std::stringstream timestamp_suffix;
     timestamp_suffix << std::setw(20) << std::setfill('0');
