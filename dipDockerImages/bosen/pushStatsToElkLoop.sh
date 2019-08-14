@@ -12,14 +12,20 @@ while ${_not_ended}
 do
 
     stat_file_list=$(
-	ls -1 "${DIP_minibatch_weight_dump_file_prefix}"*
+	ls \
+	    -1 \
+	    -f \
+	    --ignore "${DIP_minibatch_weight_dump_file_prefix}END" \
+	    "${DIP_minibatch_weight_dump_file_prefix}"*
     )
     if [ -z "${stat_file_list}" ]
     then
 	sleep 1s
     else
 	ordered_stat_file_list=$(
-	    sort -n <<< ${stat_file_list}
+	    prefix_len=${#DIP_minibatch_weight_dump_file_prefix}
+	    sort_match_position=$(( ${prefix_len} + 1 ))
+	    sort --debug -n --key=1.${sort_match_position} <<< "${stat_file_list}"
 	)
 
 	for stat_file in ${ordered_stat_file_list}
@@ -48,14 +54,24 @@ do
 	    file_timestamp_from_epoch_ns="${stat_file_suffix%_*}"
 	    thread_id="${stat_file_suffix#*_}"
 
+	    #
+	    # convert timestamp to stuitable string
+	    #
+	    s_part="${file_timestamp_from_epoch_ns::-6}"
+	    ns_part="${file_timestamp_from_epoch_ns: -6}"
+
+	    echo ${file_timestamp_from_epoch_ns}
+	    echo ${s_part}${ns_part}
+
+	    exit 1
+
 	    ${PYTHON} ${ZZ} \
 		--host=http://s-eunuc:9200 \
 		--index_prefix=test-dip-distance- \
 		--timestamp="${file_timestamp}" \
-		--worker_name="thread_${thread_id} \
+		--worker_name="thread_${thread_id}" \
 		\
 		--distance=3.5
-	    
 	done
-
+    fi
 done
