@@ -14,6 +14,9 @@
 
 #include <gflags/gflags.h>
 DECLARE_string(DIP_minibatch_weight_dump_file);
+//#include <thread>
+#include <chrono>
+
 
 
 namespace mlr {
@@ -144,10 +147,23 @@ void MLRSGDSolver::MiniBatchSGD(
 
   // if param minibatch_weight_dump_file is set, dump the current value of weight matrix to that file
   if (! FLAGS_DIP_minibatch_weight_dump_file.empty() ) {
-    static std::atomic_uint minibatch_counter = 0;
 
     std::thread::id this_thread_id = std::this_thread::get_id();
+    std::stringstream thread_name;
+    thread_name << this_thread_id;
 
+    const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
+    const std::chrono::system_clock::duration time_since_epoch = now.time_since_epoch();
+    const auto zz = std::chrono::duration_cast<std::chrono::microseconds>(time_since_epoch);
+    const uint64_t tt = zz.count();
+
+    std::stringstream timestamp_suffix;
+    timestamp_suffix << std::setw(10) << std::setfill('0') << tt;
+
+    //const std::time_t time_since_epoch = std::chrono::system_clock::now().time_since_epoch();
+    //uint64_t tt = std::chrono::duration_cast<std::chrono::milliseconds>(time_since_epoch).count();
+
+    // _int64 microseconds_since_epoch = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     /*
 #include <chrono>
@@ -162,11 +178,11 @@ void MLRSGDSolver::MiniBatchSGD(
 
  
     std::stringstream file_suffix;
-    file_suffix << std::setw(10) << std::setfill('0') << minibatch_counter;
-    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str() + '_' + this_thread_id;
+    //!!file_suffix << std::setw(10) << std::setfill('0') << minibatch_counter;
+    const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix.str() + '_' + thread_name.str() + '_' + timestamp_suffix.str();
 
     SaveWeights (minibatch_weight_file_name);
-    minibatch_counter++;
+    //!! minibatch_counter++;
   }
 }
 
