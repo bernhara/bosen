@@ -208,6 +208,11 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
-    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=args.distance, sample_dt=launch_timestamp_dt)
+    if args.timestamp:
+        sample_dt=datetime.fromtimestamp(args.timestamp)
+    else:
+        sample_dt=launch_timestamp_dt
+    
+    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=args.distance, sample_dt=sample_dt)
 
     sys.exit(0)
