@@ -246,7 +246,7 @@ if ${_push_stats_to_elk}
 then
     if [ -x "${PUSH_STATS_TO_ELK_LOOP}" ]
     then
-	DIP_minibatch_weight_dump_file_prefix="${DIP_minibatch_weight_dump_file_prefix}" \
+	stat_file_prefix="${DIP_minibatch_weight_dump_file}" \
 	    ${PUSH_STATS_TO_ELK_LOOP} &
     else
 	echo "Env var PUSH_STATS_TO_ELK_LOOP set to \"${PUSH_STATS_TO_ELK_LOOP}\" which is not an execetable file.
@@ -254,6 +254,9 @@ Set PUSH_STATS_TO_ELK_LOOP env var in an approprite way" 1>&2
 	exit 1
     fi
 fi
+
+exit 1
+
 
 set -a
 : ${GLOG_logtostderr:=true}
