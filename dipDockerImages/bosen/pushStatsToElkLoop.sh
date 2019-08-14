@@ -70,7 +70,7 @@ do
 	    ${PYTHON} ${ZZ} \
 		--host=http://s-eunuc:9200 \
 		--index_prefix=test-dip-distance- \
-		--timestamp="${elastic_timestamp}" \
+		--timestamp_since_epoch="${elastic_timestamp}" \
 		--worker_name="thread_${thread_id}" \
 		\
 		--distance=3.5
