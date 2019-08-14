@@ -75,7 +75,7 @@ do
 		\
 		--distance=3.5
 
-	    exit 1
+	    rm "${stat_file}"
 
 	done
     fi
