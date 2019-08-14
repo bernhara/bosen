@@ -4,9 +4,12 @@ HERE=$( dirname "$0" )
 
 : ${DIP_minibatch_weight_dump_file_prefix:="/tmp/minibatch_stats_"}
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
-: ${ZZ:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
+: ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
+
+: ${MAX_WAIT_DELAY_FOR_FILES:=60}
 
 _not_ended=true
+_nb_sleep_done=0
 
 while ${_not_ended}
 do
@@ -20,7 +23,21 @@ do
     )
     if [ -z "${stat_file_list}" ]
     then
-	sleep 1s
+
+	if [ -f "${DIP_minibatch_weight_dump_file_prefix}END" ]
+	then
+	    rm "${DIP_minibatch_weight_dump_file_prefix}END"
+	    exit 0
+	else
+	    if [ ${_nb_sleep_done} -ge "${MAX_WAIT_DELAY_FOR_FILES}" ]
+	    then
+		exit 1
+	    else
+		sleep 1s
+		_nb_sleep_done=$(( ${_nb_sleep_done} + 1 ))
+	    fi
+	fi
+
     else
 	ordered_stat_file_list=$(
 	    prefix_len=${#DIP_minibatch_weight_dump_file_prefix}
@@ -67,7 +84,7 @@ do
 
 	    elastic_timestamp=${utc_timestamp_since_epoch}
 
-	    ${PYTHON} ${ZZ} \
+	    ${PYTHON} ${PYTHON_MAIN} \
 		--host=http://s-eunuc:9200 \
 		--index_prefix=test-dip-distance- \
 		--utc_timestamp_since_epoch="${elastic_timestamp}" \
