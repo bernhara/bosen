@@ -42,11 +42,11 @@ num_labels, feature_dim, m_string_without_feature_index = tmp_build_real_input_m
 def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_sample):
     
     line_list = petuum_mlr_sample.splitlines()
-    zz = list (l.split() for l in line_list)
+    matrix_as_line_list_of_value_list = list (l.split() for l in line_list)
     
-    a = np.array(zz)
+    matrix_as_np_array = np.array(matrix_as_line_list_of_value_list)
     
-    return a
+    return matrix_as_np_array
 
 sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m_string_without_feature_index)
 
