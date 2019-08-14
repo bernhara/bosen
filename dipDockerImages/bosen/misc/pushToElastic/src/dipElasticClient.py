@@ -173,7 +173,7 @@ if __name__ == "__main__":
         action="store",
         dest="timestamp",
         required=False,
-        help="The timestamp to be used for inserting the new value. Should be of form yyyy-MM-dd'T'HH:mm:ss.SSSZZ."
+        help="The timestamp to be used for inserting the new value. This value should be acceptable for the Pyhton datetime.fromtimestamp function."
     )
     
     parser.add_argument(
