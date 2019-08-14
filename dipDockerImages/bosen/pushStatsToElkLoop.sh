@@ -25,7 +25,7 @@ do
 	ordered_stat_file_list=$(
 	    prefix_len=${#DIP_minibatch_weight_dump_file_prefix}
 	    sort_match_position=$(( ${prefix_len} + 1 ))
-	    sort --debug -n --key=1.${sort_match_position} <<< "${stat_file_list}"
+	    sort -n --key=1.${sort_match_position} <<< "${stat_file_list}"
 	)
 
 	for stat_file in ${ordered_stat_file_list}
@@ -59,19 +59,24 @@ do
 	    #
 	    s_part="${file_timestamp_from_epoch_ns::-6}"
 	    ns_part="${file_timestamp_from_epoch_ns: -6}"
+	    timestamp_since_epoch="${s_part}.${ns_part}"
 
-	    echo ${file_timestamp_from_epoch_ns}
-	    echo ${s_part}${ns_part}
+	    elastic_timestamp=$(
+		date "--date=@${timestamp_since_epoch}" --utc '+%Y-%m-%dT%H:%M:%S.%NZZ'
+	    )
 
-	    exit 1
+	    elastic_timestamp=${timestamp_since_epoch}
 
 	    ${PYTHON} ${ZZ} \
 		--host=http://s-eunuc:9200 \
 		--index_prefix=test-dip-distance- \
-		--timestamp="${file_timestamp}" \
+		--timestamp="${elastic_timestamp}" \
 		--worker_name="thread_${thread_id}" \
 		\
 		--distance=3.5
+
+	    exit 1
+
 	done
     fi
 done
