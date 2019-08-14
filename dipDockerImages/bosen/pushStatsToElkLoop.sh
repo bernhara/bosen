@@ -2,9 +2,13 @@
 
 HERE=$( dirname "$0" )
 
-: ${DIP_minibatch_weight_dump_file_prefix:="/tmp/minibatch_stats_"}
+set -x
+
+: ${stat_file_prefix:="/tmp/minibatch_stats_"}
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
+
+exit 1
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
 
@@ -18,16 +22,16 @@ do
 	ls \
 	    -1 \
 	    -f \
-	    "${DIP_minibatch_weight_dump_file_prefix}"* \
+	    "${stat_file_prefix}"* \
 	| \
-	    grep -v "${DIP_minibatch_weight_dump_file_prefix}END"
+	    grep -v "${stat_file_prefix}END"
     )
     if [ -z "${stat_file_list}" ]
     then
 
-	if [ -f "${DIP_minibatch_weight_dump_file_prefix}END" ]
+	if [ -f "${stat_file_prefix}END" ]
 	then
-	    rm "${DIP_minibatch_weight_dump_file_prefix}END"
+	    rm "${stat_file_prefix}END"
 	    exit 0
 	else
 	    if [ ${_nb_sleep_done} -ge "${MAX_WAIT_DELAY_FOR_FILES}" ]
@@ -41,7 +45,7 @@ do
 
     else
 	ordered_stat_file_list=$(
-	    prefix_len=${#DIP_minibatch_weight_dump_file_prefix}
+	    prefix_len=${#stat_file_prefix}
 	    sort_match_position=$(( ${prefix_len} + 1 ))
 	    sort -n --key=1.${sort_match_position} <<< "${stat_file_list}"
 	)
@@ -67,7 +71,7 @@ do
 	    )
 
 	    # get timestamp from file name
-	    stat_file_suffix="${stat_file#${DIP_minibatch_weight_dump_file_prefix}}"
+	    stat_file_suffix="${stat_file#${stat_file_prefix}}"
 	    
 	    file_timestamp_from_epoch_ns="${stat_file_suffix%_*}"
 	    thread_id="${stat_file_suffix#*_}"
