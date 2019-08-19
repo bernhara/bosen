@@ -25,10 +25,12 @@ fi
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
+: ${END_TAG_SUFFIX:='__END__'}
 
 _not_ended=true
 _nb_sleep_done=0
 : ${_do_unit_test:=''}
+
 
 getFieldValueOnLine ()
 {
@@ -76,24 +78,24 @@ postStatFilesMainLoop ()
     while ${_not_ended}
     do
 
-	# get all files, except the one called "${stat_file_prefix}__END__"
+	# get all files, except the one called "${stat_file_prefix}${END_TAG_SUFFIX}"
 	stat_file_list=$(
 	    ls \
 		-1 \
 		-f \
 		"${stat_file_prefix}"* \
 		| \
-		grep -v "${stat_file_prefix}__END__"
+		grep -v "${stat_file_prefix}${END_TAG_SUFFIX}"
 	)
 	if [ -z "${stat_file_list}" ]
 	then
 
 	    # NO stat files have been found
 
-	    if [ -f "${stat_file_prefix}END" ]
+	    if [ -f "${stat_file_prefix}${END_TAG_SUFFIX}" ]
 	    then
-		# if we fould no stat files, but "${stat_file_prefix}__END__", we terminate the infinite loop
-		rm "${stat_file_prefix}END"
+		# if we fould no stat files, but "${stat_file_prefix}"${END_TAG_SUFFIX}"", we terminate the infinite loop
+		rm "${stat_file_prefix}${END_TAG_SUFFIX}"
 		exit 0
 	    else
 		if [ ${_nb_sleep_done} -ge "${MAX_WAIT_DELAY_FOR_FILES}" ]
@@ -131,8 +133,6 @@ postStatFilesMainLoop ()
 		feature_dim=$( getFieldValueOnLine 2 "${stat_file_content}" )
 		matrix=$( getDenseRawMatrix "${stat_file_content}" )
 
-		set -x
-
 		# get timestamp from file name
 		stat_file_suffix="${stat_file#${stat_file_prefix}}"
 		
@@ -146,14 +146,19 @@ postStatFilesMainLoop ()
 		ns_part="${file_timestamp_from_epoch_ns: -6}"
 		utc_timestamp_since_epoch="${s_part}.${ns_part}"
 
+		#
+		# generated dummy var to check (during debugging) the retrieved timestamp
+		#
 		hm_timestamp=$(
 		    date "--date=@${utc_timestamp_since_epoch}" --utc '+%Y-%m-%dT%H:%M:%S.%NZZ'
 		)
 
 		elastic_timestamp=${utc_timestamp_since_epoch}
 
+		set -x
+
 		${PYTHON} ${PYTHON_MAIN} \
-		    --host=http://s-eunuc:9200 \
+		    --host=${_elasticsearch_log_url} \
 		    --index_prefix=test-dip-distance- \
 		    --utc_timestamp_since_epoch="${elastic_timestamp}" \
 		    --worker_name="thread_${thread_id}" \
@@ -202,7 +207,7 @@ then
     unit_test_file_name="${stat_file_prefix}${timestamp_suffix}_$$"
 
     cat <<< "${m_string_for_unit_test}" > "${unit_test_file_name}"
-    touch "${stat_file_prefix}__END__"
+    touch "${stat_file_prefix}${END_TAG_SUFFIX}"
     
     MAX_WAIT_DELAY_FOR_FILES=2
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
