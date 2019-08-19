@@ -11,18 +11,25 @@ HERE=$( dirname "$0" )
 _not_ended=true
 _nb_sleep_done=0
 
-getNumLaels ()
+getNumLabel ()
 {
+    bosen_weight_file_content="$1"
+
     num_labels=$(
-		sed -n 1p "${stat_file}" | cut --fields=2
-	    )
+	sed -n 1p <<< ${bose_weight_file_content} | cut --fields=2
+    )
+
+    echo ${num_labels}
 }
 
 getFeatureDim ()
 {
+    bosen_weight_file_content="$1"
+
     feature_dim=$(
-	sed -n 2p "${stat_file}" | cut --fields=2
+	sed -n 2p <<< ${bose_weight_file_content} | cut --fields=2
     )
+    echo ${feature_dim}
 }
 
 while ${_not_ended}
