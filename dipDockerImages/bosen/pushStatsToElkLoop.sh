@@ -3,7 +3,7 @@
 #
 # the file format is the following
 #
-# <prefix>_<thread id int>_<UTC timestamp with 6 ending digits for microseconds>
+# <prefix><UTC timestamp with 6 ending digits for microseconds>_<thread id int>
 #
 # example: /tmp/zz_00001566205429617756_00000140431159338752
 #
@@ -193,12 +193,16 @@ feature_dim: 54
 if [ -n "${_do_unit_test}" ]
 then
 
-    timestamp_suffix="$( date --utc '+%s' ).123456"
+    timestamp_suffix="$( date --utc '+%s' )123456"
 
-    echo "${m_final_learning_string_for_unit_test}" > "${stat_file_prefix}${timestamp_suffix}"
+    unit_test_file_name="${stat_file_prefix}${timestamp_suffix}_$$"
+
+    echo "${m_final_learning_string_for_unit_test}" > "${unit_test_file_name}"
     touch "${stat_file_prefix}__END__"
     
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
+
+    rm -f "${unit_test_file_name}" "${stat_file_prefix}__END__"
 
 fi
 
