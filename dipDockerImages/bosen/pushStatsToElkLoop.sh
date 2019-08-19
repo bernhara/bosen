@@ -11,16 +11,36 @@
 
 HERE=$( dirname "$0" )
 
-_elasticsearch_log_url="$1"
+_elasticsearch_log_url=''
+_stat_file_prefix=''
 
-if [ -z "${_elasticsearch_log_url}" ]
+while [ -n "$1" ]
+do
+    case "$1" in
+
+	--elasticsearch_url=* )
+	    _elasticsearch_log_url="${1#--elasticsearch_url=}"
+	    ;;
+
+	--stat_file_prefix=* )
+	    _stat_file_prefix="${1#--stat_file_prefix}"
+	    ;;
+	*)
+	    ;;
+    esac
+
+    shift
+done
+
+
+
+if [ -z "${_elasticsearch_log_url}" -o -z "${_stat_file_prefix}" ]
 then
-    echo "USAGE: $0 <elastic search url>" 1>&2
+    echo "USAGE: $0 --elasticsearch_url=<elastic search url> --stat_file_prefix=<prefix of weight files>" 1>&2
     exit 1
 fi
 
 
-: ${stat_file_prefix:="/tmp/minibatch_stats_"}
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
@@ -80,24 +100,24 @@ postStatFilesMainLoop ()
     while ${_not_ended}
     do
 
-	# get all files, except the one called "${stat_file_prefix}${END_TAG_SUFFIX}"
+	# get all files, except the one called "${_stat_file_prefix}${END_TAG_SUFFIX}"
 	stat_file_list=$(
 	    ls \
 		-1 \
 		-f \
-		"${stat_file_prefix}"* \
+		"${_stat_file_prefix}"* \
 		| \
-		grep -v "${stat_file_prefix}${END_TAG_SUFFIX}"
+		grep -v "${_stat_file_prefix}${END_TAG_SUFFIX}"
 	)
 	if [ -z "${stat_file_list}" ]
 	then
 
 	    # NO stat files have been found
 
-	    if [ -f "${stat_file_prefix}${END_TAG_SUFFIX}" ]
+	    if [ -f "${_stat_file_prefix}${END_TAG_SUFFIX}" ]
 	    then
-		# if we fould no stat files, but "${stat_file_prefix}"${END_TAG_SUFFIX}"", we terminate the infinite loop
-		rm "${stat_file_prefix}${END_TAG_SUFFIX}"
+		# if we fould no stat files, but "${_stat_file_prefix}"${END_TAG_SUFFIX}"", we terminate the infinite loop
+		rm "${_stat_file_prefix}${END_TAG_SUFFIX}"
 		exit 0
 	    else
 		if [ ${_nb_sleep_done} -ge "${MAX_WAIT_DELAY_FOR_FILES}" ]
@@ -118,7 +138,7 @@ postStatFilesMainLoop ()
 
 	    # we reorder the list, based on a subpart containing the timestamp of the file
 	    ordered_stat_file_list=$(
-		prefix_len=${#stat_file_prefix}
+		prefix_len=${#_stat_file_prefix}
 		sort_match_position=$(( ${prefix_len} + 1 ))
 		sort -t '_' --key=1.${sort_match_position}n <<< "${stat_file_list}"
 
@@ -136,7 +156,7 @@ postStatFilesMainLoop ()
 		matrix="$( getDenseRawMatrix "${stat_file_content}" )"
 
 		# get timestamp from file name
-		stat_file_suffix="${stat_file#${stat_file_prefix}}"
+		stat_file_suffix="${stat_file#${_stat_file_prefix}}"
 		
 		file_timestamp_from_epoch_ns="${stat_file_suffix%_*}"
 		thread_id="${stat_file_suffix#*_}"
@@ -209,10 +229,10 @@ then
 
     timestamp_suffix="$( date --utc '+%s' )123456"
 
-    unit_test_file_name="${stat_file_prefix}${timestamp_suffix}_$$"
+    unit_test_file_name="${_stat_file_prefix}${timestamp_suffix}_$$"
 
     cat <<< "${m_string_for_unit_test}" > "${unit_test_file_name}"
-    touch "${stat_file_prefix}${END_TAG_SUFFIX}"
+    touch "${_stat_file_prefix}${END_TAG_SUFFIX}"
     
     MAX_WAIT_DELAY_FOR_FILES=2
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
