@@ -22,6 +22,6 @@ ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:$PATH
 
 CMD ["testit.sh"]
 
-ENV ELASTICSEARCH_LOG_URL=
+ENV STATS_ELASTICSEARCH_URL=
 
 ENV MLR_MAIN=/home/dip/bin/mlr_main NB_THREADS=2 GLOG_logtostderr=true GLOG_v=-1 GLOG_minloglevel=0
