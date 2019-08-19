@@ -199,7 +199,7 @@ if __name__ == "__main__":
     )
     
     parser.add_argument(
-        "-w",
+        "-m",
         "--minibatch_weight_matrix",
         action="store",
         dest="minibatch_weight_matrix",
