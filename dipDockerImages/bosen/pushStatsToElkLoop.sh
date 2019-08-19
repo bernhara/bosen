@@ -11,8 +11,15 @@
 
 HERE=$( dirname "$0" )
 
+: ${_do_unit_test:=''}
+
 _elasticsearch_log_url=''
 _stat_file_prefix=''
+
+if [ -n "${_do_unit_test}" ]
+then
+    set -- --elasticsearch_url=http://s-ku2raph:9200 --stat_file_prefix=/tmp/zz_
+fi
 
 while [ -n "$1" ]
 do
@@ -23,7 +30,7 @@ do
 	    ;;
 
 	--stat_file_prefix=* )
-	    _stat_file_prefix="${1#--stat_file_prefix}"
+	    _stat_file_prefix="${1#--stat_file_prefix=}"
 	    ;;
 	*)
 	    ;;
@@ -49,8 +56,6 @@ fi
 
 _not_ended=true
 _nb_sleep_done=0
-: ${_do_unit_test:=''}
-
 
 getFieldValueOnLine ()
 {
