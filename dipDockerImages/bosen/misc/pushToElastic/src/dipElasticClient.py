@@ -143,10 +143,10 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "-H",
-        "--host",
+        "--elasticsearch_url",
         action="store",
-        default="s-ku2raph:9200",
-        help="The elasticsearch host you wish to connect to. (Default: s-ku2raph:9200)",
+        required=True,
+        help="The elasticsearch host you wish to connect to.",
     )
     
     parser.add_argument(

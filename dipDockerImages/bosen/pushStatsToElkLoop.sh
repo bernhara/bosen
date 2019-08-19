@@ -158,7 +158,7 @@ postStatFilesMainLoop ()
 		set -x
 
 		${PYTHON} ${PYTHON_MAIN} \
-		    --host=${_elasticsearch_log_url} \
+		    --elasticsearch_url=${_elasticsearch_log_url} \
 		    --index_prefix=test-dip-distance- \
 		    --utc_timestamp_since_epoch="${elastic_timestamp}" \
 		    --worker_name="thread_${thread_id}" \
