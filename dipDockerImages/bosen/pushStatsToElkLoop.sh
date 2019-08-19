@@ -54,6 +54,8 @@ fi
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
 : ${END_TAG_SUFFIX:='__END__'}
 
+: ${ELASTICSEARCH_INDEX_PREFIX:="dip-stat-weight-distance-"}
+
 _not_ended=true
 _nb_sleep_done=0
 
@@ -184,7 +186,7 @@ postStatFilesMainLoop ()
 
 		${PYTHON} ${PYTHON_MAIN} \
 		    --elasticsearch_url=${_elasticsearch_log_url} \
-		    --index_prefix=test-dip-distance- \
+		    --index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
 		    --utc_timestamp_since_epoch="${elastic_timestamp}" \
 		    --worker_name="thread_${thread_id}" \
 		    \
