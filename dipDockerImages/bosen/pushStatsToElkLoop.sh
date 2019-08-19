@@ -188,7 +188,7 @@ then
 
     echo "${m_final_learning_string_for_unit_test}" > "${stat_file_prefix}_${timestamp_suffix}"
     
-    stat_target_bosen_weights="${m_final_learning_string_for_unit_test}"
+    STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
 
 fi
 
