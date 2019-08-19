@@ -24,9 +24,17 @@ _nb_sleep_done=0
 getNumLabels ()
 {
     bosen_weight_file_content="$1"
+    echo TTTTT
+    echo "${bosen_weight_file_content}" 
+    echo
+    wc -l <<< "${bosen_weight_file_content}"
+    echo XXXXX
+    sed -n 1p <<< "${bosen_weight_file_content}"
+    echo YYYYY
+
 
     num_labels=$(
-	sed -n 1p <<< ${bose_weight_file_content} | cut --fields=2
+	sed -n 1p <<< "${bose_weight_file_content}" | cut --fields=2
     )
 
     echo ${num_labels}
@@ -47,7 +55,7 @@ getDenseRawMatrix ()
     bosen_weight_file_content="$1"
 
     matrix_with_features=$(
-	sed -n '3,$p' <<< ${bose_weight_file_content}
+	sed -n '3,$p' <<< "${bose_weight_file_content}"
     )
 
     matrix_without_features=$(
@@ -126,6 +134,7 @@ postStatFilesMainLoop ()
 		# prepare input for stat post pgm
 		#
 		num_labels=$( getNumLabels "${stat_file_content}" )
+		exit 1
 		feature_dim=$( getFeatureDim "${stat_file_content}" )
 		matrix=$( getDenseRawMatrix "${stat_file_content}" )
 
@@ -198,12 +207,16 @@ then
 
     unit_test_file_name="${stat_file_prefix}${timestamp_suffix}_$$"
 
-    cat <<< ${m_string_for_unit_test} > "${unit_test_file_name}"
+    cat <<< "${m_string_for_unit_test}" > "${unit_test_file_name}"
     touch "${stat_file_prefix}__END__"
     
     MAX_WAIT_DELAY_FOR_FILES=2
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
 
 fi
+
+getNumLabels "${m_string_for_unit_test}"
+exit 1
+
 
 postStatFilesMainLoop
