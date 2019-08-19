@@ -182,8 +182,6 @@ postStatFilesMainLoop ()
 
 		elastic_timestamp=${utc_timestamp_since_epoch}
 
-		set -x
-
 		${PYTHON} ${PYTHON_MAIN} \
 		    --elasticsearch_url=${_elasticsearch_log_url} \
 		    --index_prefix=test-dip-distance- \
