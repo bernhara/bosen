@@ -75,6 +75,8 @@ postStatFilesMainLoop ()
 	exit 1
     fi
 
+    _target_weight_matrix="$( getDenseRawMatrix "${STAT_TARGET_BOSEN_WEIGHTS}" )"
+
     while ${_not_ended}
     do
 
@@ -131,7 +133,7 @@ postStatFilesMainLoop ()
 		#
 		num_labels=$( getFieldValueOnLine 1 "${stat_file_content}" )
 		feature_dim=$( getFieldValueOnLine 2 "${stat_file_content}" )
-		matrix=$( getDenseRawMatrix "${stat_file_content}" )
+		matrix="$( getDenseRawMatrix "${stat_file_content}" )"
 
 		# get timestamp from file name
 		stat_file_suffix="${stat_file#${stat_file_prefix}}"
@@ -163,7 +165,10 @@ postStatFilesMainLoop ()
 		    --utc_timestamp_since_epoch="${elastic_timestamp}" \
 		    --worker_name="thread_${thread_id}" \
 		    \
-		    --distance=3.5
+		    --num_labels="${num_labels}" \
+		    --feature_dim="${feature_dim}" \
+		    --minibatch_weight_matrix="${matrix}" \
+		    --target_weight_matrix="${_target_weight_matrix}"
 
 		rm "${stat_file}"
 
