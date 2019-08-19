@@ -1,5 +1,14 @@
 #! /bin/bash
 
+#
+# the file format is the following
+#
+# <prefix>_<thread id int>_<UTC timestamp with 6 ending digits for microseconds>
+#
+# example: /tmp/zz_00001566205429617756_00000140431159338752
+#
+
+
 HERE=$( dirname "$0" )
 
 : ${stat_file_prefix:="/tmp/minibatch_stats_"}
@@ -184,9 +193,10 @@ feature_dim: 54
 if [ -n "${_do_unit_test}" ]
 then
 
-    timestamp_suffix="$( date --utc '+s' ).123456"
+    timestamp_suffix="$( date --utc '+%s' ).123456"
 
-    echo "${m_final_learning_string_for_unit_test}" > "${stat_file_prefix}_${timestamp_suffix}"
+    echo "${m_final_learning_string_for_unit_test}" > "${stat_file_prefix}${timestamp_suffix}"
+    touch "${stat_file_prefix}__END__"
     
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
 
