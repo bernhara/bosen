@@ -56,6 +56,12 @@ getDenseRawMatrix ()
 postStatFilesMainLoop ()
 {
 
+    if [ -z "${STAT_TARGET_BOSEN_WEIGHTS}" ]
+    then
+	echo "ERROR: no content provided for var \"STAT_TARGET_BOSEN_WEIGHTS\"" 1>&2
+	exit 1
+    fi
+
     while ${_not_ended}
     do
 
@@ -181,6 +187,9 @@ then
     timestamp_suffix="$( date --utc '+s' ).123456"
 
     echo "${m_final_learning_string_for_unit_test}" > "${stat_file_prefix}_${timestamp_suffix}"
+    
+    stat_target_bosen_weights="${m_final_learning_string_for_unit_test}"
 
+fi
 
 postStatFilesMainLoop
