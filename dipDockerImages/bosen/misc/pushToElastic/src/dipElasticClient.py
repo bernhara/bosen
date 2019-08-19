@@ -151,15 +151,15 @@ if __name__ == "__main__":
         help="The elasticsearch host you wish to connect to.",
     )
     
-    parser.add_argument(
-        "-d",
-        "--distance",
-        action="store",
-        dest="distance",
-        type=float,
-        required=True,
-        help="The new distance to record.",
-    )
+#     parser.add_argument(
+#         "-d",
+#         "--distance",
+#         action="store",
+#         dest="distance",
+#         type=float,
+#         required=True,
+#         help="The new distance to record.",
+#     )
     
     parser.add_argument(
         "-s",
