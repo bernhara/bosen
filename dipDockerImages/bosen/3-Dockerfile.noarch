@@ -18,7 +18,7 @@ RUN \
 #
 # set default Python to the one in the created venv
 #
-ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:/home/dip/bin:$PATH
+ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:$PATH
 
 CMD ["testit.sh"]
 
