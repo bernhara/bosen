@@ -11,9 +11,24 @@ HERE=$( dirname "$0" )
 _not_ended=true
 _nb_sleep_done=0
 
+getNumLaels ()
+{
+    num_labels=$(
+		sed -n 1p "${stat_file}" | cut --fields=2
+	    )
+}
+
+getFeatureDim ()
+{
+    feature_dim=$(
+	sed -n 2p "${stat_file}" | cut --fields=2
+    )
+}
+
 while ${_not_ended}
 do
 
+    # get all files, except the one called "${stat_file_prefix}__END__"
     stat_file_list=$(
 	ls \
 	    -1 \
@@ -25,21 +40,31 @@ do
     if [ -z "${stat_file_list}" ]
     then
 
+	# NO stat files have been found
+
 	if [ -f "${stat_file_prefix}END" ]
 	then
+	    # if we fould no stat files, but "${stat_file_prefix}__END__", we terminate the infinite loop
 	    rm "${stat_file_prefix}END"
 	    exit 0
 	else
 	    if [ ${_nb_sleep_done} -ge "${MAX_WAIT_DELAY_FOR_FILES}" ]
 	    then
+		# if we did not find stat files for more than ${MAX_WAIT_DELAY_FOR_FILES}
+		# we abandon, but it's an error
 		exit 1
 	    else
+		# if we are still in reasonnable delays, we keep on waiting for new stat files
 		sleep 1s
 		_nb_sleep_done=$(( ${_nb_sleep_done} + 1 ))
 	    fi
 	fi
 
     else
+
+	# we got a list of stat files
+
+	# we reorder the list, based on a subpart containing the timestamp of the file
 	ordered_stat_file_list=$(
 	    prefix_len=${#stat_file_prefix}
 	    sort_match_position=$(( ${prefix_len} + 1 ))
@@ -73,7 +98,7 @@ do
 	    thread_id="${stat_file_suffix#*_}"
 
 	    #
-	    # convert timestamp to stuitable string
+	    # convert timestamp to suitable string
 	    #
 	    s_part="${file_timestamp_from_epoch_ns::-6}"
 	    ns_part="${file_timestamp_from_epoch_ns: -6}"
