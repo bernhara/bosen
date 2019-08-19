@@ -6,6 +6,8 @@ import argparse
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
+import weightMatrixDistance
+
 # # by default we connect to localhost:9200
 # es = Elasticsearch()
 # 
@@ -242,6 +244,11 @@ if __name__ == "__main__":
     else:
         sample_dt=launch_timestamp_dt
         
-    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=args.distance, sample_dt=sample_dt)
+    distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=args.minibatch_weight_matrix,
+                                                      target_raw_dense_matrix=args.target_weight_matrix,
+                                                      num_labels=args.num_labels,
+                                                      feature_dim=args.feature_dim)
+            
+    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
 
     sys.exit(0)

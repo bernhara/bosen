@@ -64,7 +64,9 @@ def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_
     
     return matrix_as_np_array
 
+def distance_between (x_raw_dense_matrix, target_raw_dense_matrix, num_labels, feature_dim):
 
+    return 3.7
 
 if __name__ == '__main__':
     
