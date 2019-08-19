@@ -35,6 +35,7 @@ cp -a \
     "${HERE}/mlrWrapper.sh" \
     "${HERE}/trainWorker.sh" \
     "${HERE}/testit.sh" \
+    "${HERE}/pushStatsToElkLoop.sh" \
     "${tmp_root}/home/dip/bin"
 
 cp -a -r \
