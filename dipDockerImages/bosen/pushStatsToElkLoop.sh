@@ -11,6 +11,15 @@
 
 HERE=$( dirname "$0" )
 
+_elasticsearch_log_url="$1"
+
+if [ -z "${_elasticsearch_log_url}" ]
+then
+    echo "USAGE: $0 <elastic search url>" 1>&2
+    exit 1
+fi
+
+
 : ${stat_file_prefix:="/tmp/minibatch_stats_"}
 : ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
@@ -121,10 +130,8 @@ postStatFilesMainLoop ()
 		num_labels=$( getFieldValueOnLine 1 "${stat_file_content}" )
 		feature_dim=$( getFieldValueOnLine 2 "${stat_file_content}" )
 		matrix=$( getDenseRawMatrix "${stat_file_content}" )
-		echo $num_labels
-		echo $feature_dim
-		echo $matrix
-		exit 1
+
+		set -x
 
 		# get timestamp from file name
 		stat_file_suffix="${stat_file#${stat_file_prefix}}"
