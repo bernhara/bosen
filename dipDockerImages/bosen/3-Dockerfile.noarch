@@ -12,7 +12,7 @@ RUN \
 
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
-    PIPENV_COLORBLIND=yes pipenv install --deploy --python /usr/bin/python3.6 && \
+    PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3.6 && \
     rm -r ${HOME}/.cache
 
 #
