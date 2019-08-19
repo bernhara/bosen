@@ -60,7 +60,7 @@ image_tag="${architecture}-latest"
 
 build_arg_element=""
 
-if [ -n "${_use_http_proxy_from_env}" ]
+if ${_use_http_proxy_from_env}
 then
 
     http_proxy_to_use=$(
