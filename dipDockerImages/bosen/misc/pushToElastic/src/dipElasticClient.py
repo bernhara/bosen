@@ -233,19 +233,19 @@ if __name__ == "__main__":
         
     parser.add_argument(
         "--debug",
-        type=float,
-        action="store",
-        dest="timeout",
-        default="1.0",
-        help="Timeout for interactions with Elasticsearch (Not Yet Implemented)."
+        action="store_true",
+        dest="debug",
+        default=False,
+        help="Activate debug mode."
     )    
         
     args = parser.parse_args()
 
-    # get trace logger and set level
-    tracer = logging.getLogger("elasticsearch.trace")
-    tracer.setLevel(logging.INFO)
-    tracer.addHandler(logging.StreamHandler(sys.stderr))
+    if args.debug:
+        # get trace logger and set level
+        tracer = logging.getLogger("elasticsearch.trace")
+        tracer.setLevel(logging.DEBUG)
+        tracer.addHandler(logging.StreamHandler(sys.stderr))
 
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
