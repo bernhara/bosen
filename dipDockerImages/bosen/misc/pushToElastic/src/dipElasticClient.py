@@ -160,7 +160,15 @@ if __name__ == "__main__":
 #         required=True,
 #         help="The new distance to record.",
 #     )
-    
+
+    parser.add_argument(
+        "-i",
+        "--index_prefix",
+        action="store",
+        default="dip-distance-",
+        help="The index prefix used to insert new records. (Default: dip-distance-)",
+    )
+        
     parser.add_argument(
         "-s",
         "--utc_timestamp_since_epoch",
