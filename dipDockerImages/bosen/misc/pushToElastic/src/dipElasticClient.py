@@ -226,14 +226,6 @@ if __name__ == "__main__":
         help="Timeout for interactions with Elasticsearch (Not Yet Implemented)."
     )    
         
-#     parser.add_argument(
-#         "-p",
-#         "--path",
-#         action="store",
-#         default=None,
-#         help="Path to git repo. Commits used as data to load into Elasticsearch. (Default: None)",
-#     )
-
     args = parser.parse_args()
 
     # instantiate es client, connects to localhost:9200 by default
