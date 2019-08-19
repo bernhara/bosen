@@ -47,7 +47,7 @@ getDenseRawMatrix ()
 	sed -e 's/[0-9][0-9]*://g' <<< "${matrix_with_features}"
     )
 
-    echo "${matrix_with_features}"
+    echo "${matrix_without_features}"
 }
 
 
