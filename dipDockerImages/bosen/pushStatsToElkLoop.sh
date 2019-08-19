@@ -11,7 +11,7 @@ HERE=$( dirname "$0" )
 _not_ended=true
 _nb_sleep_done=0
 
-getNumLabel ()
+getNumLabels ()
 {
     bosen_weight_file_content="$1"
 
@@ -80,15 +80,13 @@ do
 
 	for stat_file in ${ordered_stat_file_list}
 	do
+	    stat_file_content=$( cat "${stat_file}" )
+
 	    #
 	    # prepare input
 	    #
-	    num_labels=$(
-		sed -n 1p "${stat_file}" | cut --fields=2
-	    )
-	    feature_dim=$(
-		sed -n 2p "${stat_file}" | cut --fields=2
-	    )
+	    num_labels=$( getNumLabels "${stat_file_content}" )
+	    feature_dim=$( getFeatureDim "${stat_file_content}" )
 
 	    matrix_with_features=$(
 		sed -n '3,$p' "${stat_file}"
