@@ -21,26 +21,18 @@ _not_ended=true
 _nb_sleep_done=0
 : ${_do_unit_test:=''}
 
-getNumLabels ()
+getFieldValueOnLine ()
 {
-    set -x
-    bosen_weight_file_content="$1"
+    field_line_number=$1
+    bosen_weight_file_content="$2"
 
-    num_labels=$(
-	sed -n 1p <<< "${bosen_weight_file_content}" | cut --fields=2
+    field_value=$(
+	sed -n ${field_line_number}p <<< "${bosen_weight_file_content}" | \
+	    cut --delimiter=':' --fields=2 | \
+	    tr -d '[:space:]'
     )
 
-    echo "${num_labels}"
-}
-
-getFeatureDim ()
-{
-    bosen_weight_file_content="$1"
-
-    feature_dim=$(
-	sed -n 2p <<< ${bosen_weight_file_content} | cut --fields=2
-    )
-    echo "${feature_dim}"
+    echo "${field_value}"
 }
 
 getDenseRawMatrix ()
@@ -126,12 +118,13 @@ postStatFilesMainLoop ()
 		#
 		# prepare input for stat post pgm
 		#
-		num_labels=$( getNumLabels "${stat_file_content}" )
-		feature_dim=$( getFeatureDim "${stat_file_content}" )
+		num_labels=$( getFieldValueOnLine 1 "${stat_file_content}" )
+		feature_dim=$( getFieldValueOnLine 2 "${stat_file_content}" )
+		matrix=$( getDenseRawMatrix "${stat_file_content}" )
 		echo $num_labels
 		echo $feature_dim
+		echo $matrix
 		exit 1
-		matrix=$( getDenseRawMatrix "${stat_file_content}" )
 
 		# get timestamp from file name
 		stat_file_suffix="${stat_file#${stat_file_prefix}}"
