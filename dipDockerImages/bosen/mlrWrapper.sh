@@ -1,12 +1,13 @@
 #! /bin/bash
 
-#
 # launches mlr binary file, providing reasonable arguments in not provided
 #
 
-: ${MLR_MAIN:="/share/Petuum/SRCs_sync_with_git/branches/port_to_raspberry_pi2/bosen/app/mlr/bin/mlr_main"}
+: ${MLR_MAIN:="/home/dip/bin/mlr_main"}
 : ${TRAINING_TIMEOUT:=0}
-: ${PUSH_STATS_TO_ELK_LOOP:='variable PUSH_STATS_TO_ELK_LOOP not defined'}
+
+PUSH_STATS_TO_ELK_PGM=${PUSH_STATS_TO_ELK_PGM:-"/home/dip/bin/pushStatsToElkLoop.sh"}
+STATS_ELASTICSEARCH_URL=${STATS_ELASTICSEARCH_URL:-"http://s-eunuc:9200"}
 
 #
 # force some system limits
@@ -244,12 +245,13 @@ fi
 
 if ${_push_stats_to_elk}
 then
-    if [ -x "${PUSH_STATS_TO_ELK_LOOP}" ]
+    if [ -x "${PUSH_STATS_TO_ELK_PGM}" ]
     then
-	stat_file_prefix="${DIP_minibatch_weight_dump_file}" \
-	    ${PUSH_STATS_TO_ELK_LOOP} &
+	${PUSH_STATS_TO_ELK_PGM} \
+	    "--elasticsearch_url=${STATS_ELASTICSEARCH_URL}" \
+	    "--stat_file_prefix=${DIP_minibatch_weight_dump_file}" &
     else
-	echo "Env var PUSH_STATS_TO_ELK_LOOP set to \"${PUSH_STATS_TO_ELK_LOOP}\" which is not an execetable file.
+	echo "Env var PUSH_STATS_TO_ELK_PGM set to \"${PUSH_STATS_TO_ELK_PGM}\" which is not an execetable file.
 Set PUSH_STATS_TO_ELK_LOOP env var in an approprite way" 1>&2
 	exit 1
     fi
@@ -268,9 +270,12 @@ else
     ${MLR_MAIN} "$@"
 fi
 
+_mlr_exit_status=$?
+
 if ${_push_stats_to_elk}
 then
     touch "${DIP_minibatch_weight_dump_file}__END__"
+    wait
 fi
 
-exit $?
+exit ${_mlr_exit_status}
