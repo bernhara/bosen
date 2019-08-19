@@ -147,6 +147,7 @@ if __name__ == "__main__":
         "-H",
         "--elasticsearch_url",
         action="store",
+        dest="host",
         required=True,
         help="The elasticsearch host you wish to connect to.",
     )
