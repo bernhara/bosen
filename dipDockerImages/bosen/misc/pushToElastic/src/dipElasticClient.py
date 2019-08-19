@@ -136,10 +136,6 @@ def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
 
 
 if __name__ == "__main__":
-    # get trace logger and set level
-    tracer = logging.getLogger("elasticsearch.trace")
-    tracer.setLevel(logging.INFO)
-    tracer.addHandler(logging.FileHandler("./es_trace.log"))
 
     parser = argparse.ArgumentParser()
     
@@ -235,7 +231,21 @@ if __name__ == "__main__":
         help="Timeout for interactions with Elasticsearch (Not Yet Implemented)."
     )    
         
+    parser.add_argument(
+        "--debug",
+        type=float,
+        action="store",
+        dest="timeout",
+        default="1.0",
+        help="Timeout for interactions with Elasticsearch (Not Yet Implemented)."
+    )    
+        
     args = parser.parse_args()
+
+    # get trace logger and set level
+    tracer = logging.getLogger("elasticsearch.trace")
+    tracer.setLevel(logging.INFO)
+    tracer.addHandler(logging.StreamHandler(sys.stderr))
 
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
