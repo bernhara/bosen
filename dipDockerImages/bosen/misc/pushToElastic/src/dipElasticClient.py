@@ -187,6 +187,42 @@ if __name__ == "__main__":
     )
     
     parser.add_argument(
+        "-f",
+        "--feature_dim",
+        action="store",
+        dest="feature_dim",
+        required=True,
+        help="Number of feature in input weight matrix."
+    )
+    
+    parser.add_argument(
+        "-l",
+        "--num_labels",
+        action="store",
+        dest="num_labels",
+        required=True,
+        help="Number of labels in input weight matrix."
+    )
+    
+    parser.add_argument(
+        "-w",
+        "--minibatch_weight_matrix",
+        action="store",
+        dest="minibatch_weight_matrix",
+        required=True,
+        help="Raw dense matrix generated during minibatch."
+    )
+    
+    parser.add_argument(
+        "-W",
+        "--target_weight_matrix",
+        action="store",
+        dest="target_weight_matrix",
+        required=True,
+        help="Raw dense final matrix the computation should converge to."
+    )                  
+    
+    parser.add_argument(
         "-t",
         "--timeout",
         type=float,
@@ -213,7 +249,7 @@ if __name__ == "__main__":
         sample_dt=datetime.utcfromtimestamp(args.timestamp)
     else:
         sample_dt=launch_timestamp_dt
-    
+        
     putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=args.distance, sample_dt=sample_dt)
 
     sys.exit(0)
