@@ -114,7 +114,8 @@ postStatFilesMainLoop ()
 	    ordered_stat_file_list=$(
 		prefix_len=${#stat_file_prefix}
 		sort_match_position=$(( ${prefix_len} + 1 ))
-		sort -n --key=1.${sort_match_position} <<< "${stat_file_list}"
+		sort -t '_' --key=1.${sort_match_position}n <<< "${stat_file_list}"
+
 	    )
 
 	    for stat_file in ${ordered_stat_file_list}
@@ -197,12 +198,11 @@ then
 
     unit_test_file_name="${stat_file_prefix}${timestamp_suffix}_$$"
 
-    echo "${m_final_learning_string_for_unit_test}" > "${unit_test_file_name}"
+    cat <<< ${m_string_for_unit_test} > "${unit_test_file_name}"
     touch "${stat_file_prefix}__END__"
     
+    MAX_WAIT_DELAY_FOR_FILES=2
     STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
-
-    rm -f "${unit_test_file_name}" "${stat_file_prefix}__END__"
 
 fi
 
