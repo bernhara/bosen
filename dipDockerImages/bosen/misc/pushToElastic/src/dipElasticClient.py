@@ -250,6 +250,13 @@ if __name__ == "__main__":
     # instantiate es client, connects to localhost:9200 by default
     es = Elasticsearch(args.host)
     
+    if not es.ping():
+    
+        # unable to connect to ES server
+        print ("FATAL ERROR: unable to ping Elasticsearch DB server " + args.host, file=sys.stderr)
+        sys.exit(1)
+    
+    
     if args.timestamp:
         sample_dt=datetime.utcfromtimestamp(args.timestamp)
     else:
