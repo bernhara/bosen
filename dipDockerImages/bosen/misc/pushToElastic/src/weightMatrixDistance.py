@@ -60,7 +60,7 @@ def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_
     matrix_as_line_list_of_value_list = list (l.split() for l in line_list)
     
     matrix_as_np_array = np.array(matrix_as_line_list_of_value_list)
-    assert (matrix_as_np_array.shape == (num_labels, feature_dim), "Inconsistent shape for input matrix: %s" + petuum_mlr_sample)
+    assert matrix_as_np_array.shape == (num_labels, feature_dim), "Inconsistent shape for input matrix: %s" + petuum_mlr_sample
     
     return matrix_as_np_array
 
