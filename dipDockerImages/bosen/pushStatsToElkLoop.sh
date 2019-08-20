@@ -184,6 +184,7 @@ postStatFilesMainLoop ()
 
 		elastic_timestamp=${utc_timestamp_since_epoch}
 
+		timeout --preserve-status 3s \
 		${PYTHON} ${PYTHON_MAIN} \
 		    --elasticsearch_url=${_elasticsearch_log_url} \
 		    --index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
