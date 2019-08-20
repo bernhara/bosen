@@ -6,8 +6,9 @@
 : ${MLR_MAIN:="/home/dip/bin/mlr_main"}
 : ${TRAINING_TIMEOUT:=0}
 
-PUSH_STATS_TO_ELK_PGM=${PUSH_STATS_TO_ELK_PGM:-"/home/dip/bin/pushStatsToElkLoop.sh"}
-STATS_ELASTICSEARCH_URL=${STATS_ELASTICSEARCH_URL:-"http://s-eunuc:9200"}
+: ${PUSH_STATS_TO_ELK_PGM:="/home/dip/bin/pushStatsToElkLoop.sh"}
+: ${STATS_ELASTICSEARCH_URL:="http://s-eunuc:9200"}
+: ${STATS_TARGET_BOSEN_WEIGHTS:=''}
 
 #
 # force some system limits
@@ -245,9 +246,9 @@ fi
 
 if ${_push_stats_to_elk}
 then
-    if [ -z "${STAT_TARGET_BOSEN_WEIGHTS}" ]
+    if [ -z "${STATS_TARGET_BOSEN_WEIGHTS}" ]
     then
-	echo "FATAL ERROR: env var STAT_TARGET_BOSEN_WEIGHTS not set." 1>&2
+	echo "FATAL ERROR: env var STATS_TARGET_BOSEN_WEIGHTS not set." 1>&2
 	exit 1
     fi
 
@@ -255,7 +256,7 @@ then
     if [ -x "${PUSH_STATS_TO_ELK_PGM}" ]
     then
 	MAX_WAIT_DELAY_FOR_FILES=2 \
-	STAT_TARGET_BOSEN_WEIGHTS="${STAT_TARGET_BOSEN_WEIGHTS}" \
+	STATS_TARGET_BOSEN_WEIGHTS="${STAT_TARGET_BOSEN_WEIGHTS}" \
 	\
 	${PUSH_STATS_TO_ELK_PGM} \
 	    "--elasticsearch_url=${STATS_ELASTICSEARCH_URL}" \
