@@ -119,7 +119,7 @@ postStatFilesMainLoop ()
 	if [ -z "${stat_file_list}" ]
 	then
 
-	    # NO stat files have been found
+	    # No stat files have been found
 
 	    if [ -f "${_stat_file_prefix}${END_TAG_SUFFIX}" ]
 	    then
@@ -184,6 +184,7 @@ postStatFilesMainLoop ()
 
 		elastic_timestamp=${utc_timestamp_since_epoch}
 
+		set -x
 		timeout --preserve-status 3s \
 		${PYTHON} ${PYTHON_MAIN} \
 		    --elasticsearch_url=${_elasticsearch_log_url} \
@@ -197,6 +198,7 @@ postStatFilesMainLoop ()
 		    --target_weight_matrix="${_target_weight_matrix}"
 
 		rm "${stat_file}"
+		set +x
 
 	    done
 	fi
