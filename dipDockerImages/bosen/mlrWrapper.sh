@@ -245,13 +245,23 @@ fi
 
 if ${_push_stats_to_elk}
 then
+    if [ -z "${STAT_TARGET_BOSEN_WEIGHTS}" ]
+    then
+	echo "FATAL ERROR: env var STAT_TARGET_BOSEN_WEIGHTS not set." 1>&2
+	exit 1
+    fi
+
+
     if [ -x "${PUSH_STATS_TO_ELK_PGM}" ]
     then
+	MAX_WAIT_DELAY_FOR_FILES=2 \
+	STAT_TARGET_BOSEN_WEIGHTS="${STAT_TARGET_BOSEN_WEIGHTS}" \
+	\
 	${PUSH_STATS_TO_ELK_PGM} \
 	    "--elasticsearch_url=${STATS_ELASTICSEARCH_URL}" \
 	    "--stat_file_prefix=${DIP_minibatch_weight_dump_file}" &
     else
-	echo "Env var PUSH_STATS_TO_ELK_PGM set to \"${PUSH_STATS_TO_ELK_PGM}\" which is not an execetable file.
+	echo "FATAL ERROR: env var PUSH_STATS_TO_ELK_PGM set to \"${PUSH_STATS_TO_ELK_PGM}\" which is not an execetable file.
 Set PUSH_STATS_TO_ELK_LOOP env var in an approprite way" 1>&2
 	exit 1
     fi
