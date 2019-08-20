@@ -36,6 +36,7 @@ set -- "${ARGarray[@]}"
 dryrun=false
 peer_wk_list=''
 this_worker_index=''
+train_worker_args=''
 mlr_args=''
 dip_stats_elasticsearch_url=''
 dip_stats_target_weight_matrix_file=''
