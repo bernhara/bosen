@@ -249,7 +249,7 @@ then
 
 	mlr_args="${mlr_args} --DIP_minibatch_weight_dump_file=/tmp/minibatch_stats_"
 	export STATS_ELASTICSEARCH_URL="${dip_stats_elasticsearch_url}"
-	export STATS_TARGET_BOSEN_WEIGHTS=<<< "${dip_stats_target_weight_matrix_file}"
+	export STATS_TARGET_BOSEN_WEIGHTS=$(< "${dip_stats_target_weight_matrix_file}" )
 
     else
 	echo "FATAL ERROR: file \"${dip_stats_target_weight_matrix_file}\". Not readable. Check \"--dip_stats_target_weight_matrix_file\" option" 1>&2
