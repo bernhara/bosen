@@ -1,19 +1,29 @@
 # -*- mode: indented-text -*-
 
-#
-# copy everything from the prebuilt root to /
-#
-COPY tmp_root /
-
 # mandatory for pip
 ENV LC_ALL=en_US.utf8 LANG=en_US.utf8
 RUN \
     /usr/bin/python36 -m pip --no-cache-dir install pipenv
 
+#
+# copy everything from the prebuilt root to /
+#
+
+#COPY tmp_root /
+
+COPY misc/pushToElastic/Pipfile /home/dip/bin/misc/pushToElastic/
+# generated Python virtual env
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
+    mkdir .venv && \
     PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3.6 && \
     rm -r ${HOME}/.cache
+
+
+COPY mlrWrapper.sh /home/dip/bin/ 
+COPY trainWorker.sh /home/dip/bin/
+COPY testit.sh /home/dip/bin/
+COPY pushStatsToElkLoop.sh /home/dip/bin/
 
 #
 # set default Python to the one in the created venv
