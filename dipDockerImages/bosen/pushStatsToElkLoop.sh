@@ -96,13 +96,13 @@ getDenseRawMatrix ()
 postStatFilesMainLoop ()
 {
 
-    if [ -z "${STAT_TARGET_BOSEN_WEIGHTS}" ]
+    if [ -z "${STATS_TARGET_BOSEN_WEIGHTS}" ]
     then
-	echo "ERROR: no content provided for var \"STAT_TARGET_BOSEN_WEIGHTS\"" 1>&2
+	echo "ERROR: no content provided for var \"STATS_TARGET_BOSEN_WEIGHTS\"" 1>&2
 	exit 1
     fi
 
-    _target_weight_matrix="$( getDenseRawMatrix "${STAT_TARGET_BOSEN_WEIGHTS}" )"
+    _target_weight_matrix="$( getDenseRawMatrix "${STATS_TARGET_BOSEN_WEIGHTS}" )"
 
     while ${_not_ended}
     do
@@ -241,7 +241,7 @@ then
     touch "${_stat_file_prefix}${END_TAG_SUFFIX}"
     
     MAX_WAIT_DELAY_FOR_FILES=2
-    STAT_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
+    STATS_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
 
 fi
 
