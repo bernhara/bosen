@@ -37,6 +37,8 @@ dryrun=false
 peer_wk_list=''
 this_worker_index=''
 mlr_args=''
+dip_stats_elasticsearch_url=''
+dip_stats_target_weight_matrix_file=''
 
 while [ -n "$1" ]
 do
@@ -53,6 +55,14 @@ do
 
 	--peer_wk=*)
 	    peer_wk_list="${peer_wk_list} ${1#*=}"
+	    ;;
+
+	--dip_stats_elasticsearch_url=*)
+	    dip_stats_elasticsearch_url="${1#*=}"
+	    ;;
+
+	--dip_stats_target_weight_matrix_file=*)
+	    dip_stats_target_weight_matrix_file="${1#*=}"
 	    ;;
 
 	"--" )
@@ -84,7 +94,7 @@ fi
 for opt in ${mlr_args}
 do
     case "${opt}" in
-	--client_id=*|--num_clients=*|--hostfile=* )
+	--client_id=*|--num_clients=*|--hostfile=*|--DIP_minibatch_weight_dump_file=* )
 	    Usage "${opt} cannot be overwriten here" 1>&2
 	    ;;
     esac
@@ -209,6 +219,7 @@ fi
 
 # TODO: which args should be parametrized
 
+# FIXME: seems that this is no more useful
 if [ -z "${output_prefix_file}" ]
 then
     output_prefix_file="${tmp_dir}/rez"
@@ -219,6 +230,30 @@ then
     mlr_arg_global_data=false
 else
     mlr_arg_global_data=true
+fi
+
+#
+# configure to generate Elastic statistics
+#
+
+if [ -n "${dip_stats_elasticsearch_url}" ]
+then
+
+    if [ -r "${dip_stats_target_weight_matrix_file}" ]
+    then
+
+	#
+	# prepare confugration for call of mlrWrapper
+	#
+
+	mlr_args="${mlr_args} --DIP_minibatch_weight_dump_file=/tmp/minibatch_stats_"
+	export STATS_ELASTICSEARCH_URL="${dip_stats_elasticsearch_url}"
+	export STATS_TARGET_BOSEN_WEIGHTS=<<< "${dip_stats_target_weight_matrix_file}"
+
+    else
+	echo "FATAL ERROR: file \"${dip_stats_target_weight_matrix_file}\". Not readable. Check \"--dip_stats_target_weight_matrix_file\" option" 1>&2
+	exit 1
+    fi
 fi
 
 command='
