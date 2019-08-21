@@ -29,14 +29,9 @@ COPY tmp_root/home/dip/bin/testit.sh /home/dip/bin/
 COPY tmp_root/home/dip/bin/pushStatsToElkLoop.sh /home/dip/bin/
 
 #copy dataset
-COPY tmp_root/home/dip/datasets/ /home/dip/datatsets/
+COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
 
-#
-# set default Python to the one in the created venv
-#
-ENV PATH=/home/dip/bin/misc/pushToElastic/.venv/bin:$PATH
-
-CMD ["testit.sh"]
+CMD ["/home/dip/bin/testit.sh"]
 
 ENV STATS_ELASTICSEARCH_URL=
 
