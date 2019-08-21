@@ -115,7 +115,7 @@ postStatFilesMainLoop ()
 	    ls \
 		-1 \
 		-f \
-		"${_stat_file_prefix}"* \
+		"${_stat_file_prefix}"* 2>/dev/null \
 		| \
 		grep -v "${_stat_file_prefix}${END_TAG_SUFFIX}"
 	)
