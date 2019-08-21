@@ -42,6 +42,10 @@ cp -a -r \
     "${HERE}/misc" \
     "${tmp_root}/home/dip/bin/misc"
 
+#
+# rebuild VENVs for python
+#
+
 VENVs=$(
     find "${tmp_root}/home/dip/bin/misc/" -name ".venv" -print
 )
@@ -56,6 +60,16 @@ do
     rm -f ${venv}/../Pipfile.lock
 done
 
+#
+# remove __pycache__
+#
+
+set -x
+
+for d in $( find "${tmp_root}" -type d -a -name __pycache__ -print )
+do
+    rm -rf $d
+done
 
 #
 # build image
