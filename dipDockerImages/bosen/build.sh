@@ -47,7 +47,12 @@ VENVs=$(
 )
 for venv in ${VENVs}
 do
-    rm -rf ${venv}/*
+    #
+    # recreate it from scratch
+    #
+    rm -rf "${venv}"
+    mkdir "${venv}"
+
     rm -f ${venv}/../Pipfile.lock
 done
 
