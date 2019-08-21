@@ -17,6 +17,7 @@ HERE=$( dirname "$0" )
 _elasticsearch_diplog_url=''
 _stat_file_prefix=''
 _elasticsearch_server_operational=true
+: ${_timeout_before_considering_elasticsearch_KO:=10s}
 
 if [ -n "${_do_unit_test}" ]
 then
@@ -191,7 +192,7 @@ postStatFilesMainLoop ()
 
 		if ${_elasticsearch_server_operational}
 		then
-		    timeout 10s \
+		    timeout ${_timeout_before_considering_elasticsearch_KO} \
 			${PYTHON} ${PYTHON_MAIN} \
 			--elasticsearch_url=${_elasticsearch_diplog_url} \
 			--index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
