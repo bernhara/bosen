@@ -3,7 +3,7 @@
 # mandatory for pip
 ENV LC_ALL=en_US.utf8 LANG=en_US.utf8
 RUN \
-    /usr/bin/python36 -m pip --no-cache-dir install pipenv
+    /usr/bin/python3 -m pip --no-cache-dir install pipenv
 
 #
 # copy everything from the prebuilt root to /
@@ -16,7 +16,7 @@ COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
 # generate Python virtual env
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
-    PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3.6 && \
+    PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3 && \
     rm -r ${HOME}/.cache
 
 # copy binary files
