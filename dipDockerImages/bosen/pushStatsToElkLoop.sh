@@ -109,9 +109,6 @@ postStatFilesMainLoop ()
     while ${_not_ended}
     do
 
-	# FIXME: DEBUG
-	set -x
-
 	# get all files, except the one called "${_stat_file_prefix}${END_TAG_SUFFIX}"
 	stat_file_list=$(
 	    ls \
@@ -158,12 +155,8 @@ postStatFilesMainLoop ()
 
 	    )
 
-	    # FIXME:
-	    set +x
 	    for stat_file in ${ordered_stat_file_list}
 	    do
-		# FIXME:
-		echo "ZZZZZZZZZZ=== handling ${stat_file}" 1>&2
 
 		stat_file_content=$( cat "${stat_file}" )
 
