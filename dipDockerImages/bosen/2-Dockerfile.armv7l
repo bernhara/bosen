@@ -38,6 +38,6 @@ RUN \
     apt-get install -y  \
     	    python3-pip \
     && \
-    yum clean all && \
+    apt-get clean && \
     rm -rf /tmp/* && \
     rm -f /core
