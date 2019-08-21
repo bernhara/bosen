@@ -51,7 +51,7 @@ then
 fi
 
 
-: ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python3.6"}
+: ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
