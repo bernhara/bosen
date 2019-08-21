@@ -196,7 +196,7 @@ postStatFilesMainLoop ()
 
 		elastic_timestamp=${utc_timestamp_since_epoch}
 
-		if _elasticsearch_server_operational
+		if ${_elasticsearch_server_operational}
 		then
 		    timeout 10s \
 			${PYTHON} ${PYTHON_MAIN} \
