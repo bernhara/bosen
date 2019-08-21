@@ -9,21 +9,24 @@ RUN \
 # copy everything from the prebuilt root to /
 #
 
-#COPY tmp_root /
-
-COPY misc/pushToElastic/Pipfile /home/dip/bin/misc/pushToElastic/
-# generated Python virtual env
+#
+# copy each python project which needs it's own python interpreter to be regenerated
+#
+COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
+# generate Python virtual env
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
-    mkdir .venv && \
     PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3.6 && \
     rm -r ${HOME}/.cache
 
+# copy needed scripts
+COPY tmp_root/home/dip/bin/mlrWrapper.sh /home/dip/bin/ 
+COPY tmp_root/home/dip/bin/trainWorker.sh /home/dip/bin/
+COPY tmp_root/home/dip/bin/testit.sh /home/dip/bin/
+COPY tmp_root/home/dip/bin/pushStatsToElkLoop.sh /home/dip/bin/
 
-COPY mlrWrapper.sh /home/dip/bin/ 
-COPY trainWorker.sh /home/dip/bin/
-COPY testit.sh /home/dip/bin/
-COPY pushStatsToElkLoop.sh /home/dip/bin/
+#copy dataset
+COPY tmp_root/home/dip/datasets/ /home/dip/datatsets/
 
 #
 # set default Python to the one in the created venv
