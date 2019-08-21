@@ -14,7 +14,7 @@ HERE=$( dirname "$0" )
 
 : ${_do_unit_test:=''}
 
-_elasticsearch_log_url=''
+_elasticsearch_diplog_url=''
 _stat_file_prefix=''
 _elasticsearch_server_operational=true
 
@@ -28,7 +28,7 @@ do
     case "$1" in
 
 	--elasticsearch_url=* )
-	    _elasticsearch_log_url="${1#--elasticsearch_url=}"
+	    _elasticsearch_diplog_url="${1#--elasticsearch_url=}"
 	    ;;
 
 	--stat_file_prefix=* )
@@ -43,7 +43,7 @@ done
 
 
 
-if [ -z "${_elasticsearch_log_url}" -o -z "${_stat_file_prefix}" ]
+if [ -z "${_elasticsearch_diplog_url}" -o -z "${_stat_file_prefix}" ]
 then
     echo "USAGE: $0 --elasticsearch_url=<elastic search url> --stat_file_prefix=<prefix of weight files>" 1>&2
     exit 1
@@ -200,7 +200,7 @@ postStatFilesMainLoop ()
 		then
 		    timeout 10s \
 			${PYTHON} ${PYTHON_MAIN} \
-			--elasticsearch_url=${_elasticsearch_log_url} \
+			--elasticsearch_url=${_elasticsearch_diplog_url} \
 			--index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
 			--utc_timestamp_since_epoch="${elastic_timestamp}" \
 			--worker_name="thread_${thread_id}" \
