@@ -216,6 +216,11 @@ postStatFilesMainLoop ()
 			124)
 			    # we got a timeout
 			    # => we consider Elasticsearch server to slow and we give up
+			    #
+			    # NOTE:
+			    #   we do not exit this process to continue remover generated stat_file.
+			    #   this prevents possible filesystem growth problems
+
 			    echo "${COMMAND} FATAL ERROR. Timeout reach while running elasticsearch push client. Skip future calls." 1>&2
 			    _elasticsearch_server_operational=false
 			    ;;
