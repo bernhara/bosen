@@ -14,7 +14,6 @@
 
 #include <gflags/gflags.h>
 DECLARE_string(DIP_minibatch_weight_dump_file);
-//#include <thread>
 #include <chrono>
 
 
