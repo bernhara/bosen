@@ -168,7 +168,6 @@ void MLRSGDSolver::MiniBatchSGD(
     const std::string minibatch_weight_file_name = FLAGS_DIP_minibatch_weight_dump_file + file_suffix;
 
     SaveWeights (minibatch_weight_file_name);
-    //!! minibatch_counter++;
   }
 }
 
