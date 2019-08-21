@@ -136,8 +136,6 @@ postStatFilesMainLoop ()
 		    # we abandon, but it's an error
 		    exit 1
 		else
-		    echo "DEBUG: =============================== enter sleep" 1>&2
-
 		    # if we are still in reasonnable delays, we keep on waiting for new stat files
 		    sleep 1s
 		    _nb_sleep_done=$(( ${_nb_sleep_done} + 1 ))
