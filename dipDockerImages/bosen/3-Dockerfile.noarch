@@ -19,6 +19,9 @@ RUN \
     PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3.6 && \
     rm -r ${HOME}/.cache
 
+# copy binary files
+COPY tmp_root/home/dip/bin/mlr_main /home/dip/bin/ 
+
 # copy needed scripts
 COPY tmp_root/home/dip/bin/mlrWrapper.sh /home/dip/bin/ 
 COPY tmp_root/home/dip/bin/trainWorker.sh /home/dip/bin/
