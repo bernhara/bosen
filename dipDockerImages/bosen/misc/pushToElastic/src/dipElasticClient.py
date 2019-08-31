@@ -34,7 +34,7 @@ def getElasticTimestamp (dt_value):
     # SEE: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html#built-in-date-formats
     # Used format: strict_date_time (yyyy-MM-dd'T'HH:mm:ss.SSSZZ)
     
-    iso_dt_value = dt_value.isoformat(sep='T', timespec='milliseconds')
+    iso_dt_value = dt_value.isoformat(sep='T')
     
     timestamp = iso_dt_value + 'ZZ'
     
