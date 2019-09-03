@@ -2,6 +2,7 @@
 # TEST
 import numpy as np
 from numpy import linalg as LA
+import math
 
 import re
 
@@ -52,7 +53,7 @@ feature_dim: 54
 #
 
 
-num_labels, feature_dim, m_string_without_feature_index = tmp_build_real_input_matrix_string(m_string_for_unit_test)
+
 
 def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_sample):
     
@@ -66,8 +67,27 @@ def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_
 
 def distance_between (x_raw_dense_matrix, target_raw_dense_matrix, num_labels, feature_dim):
 
-    return 3.7
+   
+    c_minus_b = x_raw_dense_matrix - target_raw_dense_matrix
+    m_square = np.square (c_minus_b)
+    s = m_square.sum()
+    
+    norm1 = math.sqrt (s)
+    
+    # version 2
+    
+    norm2 = LA.norm(c_minus_b)
+    
+
+    return norm2
 
 if __name__ == '__main__':
     
+    num_labels, feature_dim, m_string_without_feature_index = tmp_build_real_input_matrix_string(m_string_for_unit_test)    
     sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m_string_without_feature_index)
+    
+    num_labels, feature_dim, m_final_learning_string_without_feature_index = tmp_build_real_input_matrix_string(m_final_learning_string_for_unit_test)
+    final_learning_sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m_final_learning_string_without_feature_index)
+    
+    tt = distance_between (num_labels, feature_dim, sample_data_as_np_matrix, final_learning_sample_data_as_np_matrix)    
+
