@@ -21,7 +21,8 @@ _elasticsearch_server_operational=true
 
 if [ -n "${_do_unit_test}" ]
 then
-    set -- --elasticsearch_url=http://s-ku2raph:9200 --stat_file_prefix=/tmp/zz_
+    # preset some defaults
+    set -- --elasticsearch_url=http://s-ku2raph:9200 --stat_file_prefix=/tmp/zz_ "$@"
 fi
 
 while [ -n "$1" ]
