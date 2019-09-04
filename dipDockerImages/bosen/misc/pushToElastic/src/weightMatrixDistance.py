@@ -34,14 +34,19 @@ def distance_between (x_raw_dense_matrix, target_raw_dense_matrix, num_labels, f
     m_square = np.square (c_minus_b)
     s = m_square.sum()
     
-    norm1 = math.sqrt (s)
+    norm = math.sqrt (s)
     
     # version 2
     
-    norm2 = LA.norm(c_minus_b)
+    # FIXME:
+    # test if that version is faster
+    #la_norm2 = LA.norm(c_minus_b)
     
+    return norm
 
-    return norm2
+#
+# Unit tests
+#
 
 
 import unittest
