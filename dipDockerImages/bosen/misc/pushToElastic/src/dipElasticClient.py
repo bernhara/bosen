@@ -262,8 +262,17 @@ if __name__ == "__main__":
     else:
         sample_dt=launch_timestamp_dt
         
-    distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=args.minibatch_weight_matrix,
-                                                      target_raw_dense_matrix=args.target_weight_matrix,
+        
+    x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                              feature_dim=args.feature_dim,
+                                                                              petuum_mlr_sample=args.minibatch_weight_matrix)
+    
+    target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                                   feature_dim=args.feature_dim,
+                                                                                   petuum_mlr_sample=args.target_weight_matrix)   
+        
+    distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=x_np_matrix,
+                                                      target_raw_dense_matrix=target_nm_matrix,
                                                       num_labels=args.num_labels,
                                                       feature_dim=args.feature_dim)
             
