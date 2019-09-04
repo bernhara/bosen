@@ -49,13 +49,21 @@ import unittest
 class TestStringMethods(unittest.TestCase):
     
     def _build_real_input_matrix_string (self, sample_data):
+        
+        sample_data_as_list=sample_data.splitlines()
+        
+        num_labels_line=sample_data_as_list[0]
+        num_labels_line_as_list = num_labels_line.split()
+        num_label = num_labels_line_as_list[1]
+        
+        feature_dim_line=sample_data_as_list[1]
+        feature_dim_line_as_list = feature_dim_line.split()
+        feature_dim = feature_dim_line_as_list[1]        
+        
     
-        # FIXME: following values should be computed
-        num_labels=7
-        feature_dim=54
-    
+   
         sample_data_without_headers=sample_data[30:]
-        sample_data_without_feature_index=re.sub('[0-9]+\:', '', sample_data_without_headers)
+        sample_data_without_feature_index=re.sub('[0-9]+\:', '', sample_data)
     
         return (num_labels, feature_dim, sample_data_without_feature_index)
     
