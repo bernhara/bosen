@@ -54,11 +54,11 @@ class TestStringMethods(unittest.TestCase):
         
         num_labels_line=sample_data_as_list[0]
         num_labels_line_as_list = num_labels_line.split()
-        num_labels = num_labels_line_as_list[1]
+        num_labels = int(num_labels_line_as_list[1])
         
         feature_dim_line=sample_data_as_list[1]
         feature_dim_line_as_list = feature_dim_line.split()
-        feature_dim = feature_dim_line_as_list[1]        
+        feature_dim = int(feature_dim_line_as_list[1])        
         
         m = re.search(r'[0-9]+\:', sample_data)
         data_first_char_pos = m.start(0)
@@ -105,7 +105,7 @@ class TestStringMethods(unittest.TestCase):
                               x_raw_dense_matrix=m1_as_np_matrix,
                               target_raw_dense_matrix=m2_as_np_matrix)
         
-        self.assertAlmostEqual(4.898979485566356, d, delta=0.0001, msg='got unexpected distance')
+        self.assertAlmostEqual(7.05471, d, delta=0.0001, msg='got unexpected distance')
         
     def test_computation(self):
         
