@@ -5,13 +5,6 @@ from numpy import linalg as LA
 import math
 
 import re
-from numpy.lib.tests.test_format import dtype
-
-a = np.arange(9) - 4
-
-b = a.reshape((3, 3))
-
-LA.norm(a)
 
 #
 # FIXME: the following code should be removed
@@ -112,7 +105,7 @@ if __name__ == '__main__':
     num_labels, feature_dim, m2_string_without_feature_index = tmp_build_real_input_matrix_string(petuum_m2)
     final_learning_sample_data_as_np_matrix = petuum_mlr_sample_data_to_numpy_matrix(num_labels, feature_dim, m2_string_without_feature_index)
     
-    r_test_1 = distance_between (num_labels, feature_dim, sample_data_as_np_matrix, final_learning_sample_data_as_np_matrix)
+    r_test_1 = distance_between (num_labels=num_labels, feature_dim=feature_dim, x_raw_dense_matrix=sample_data_as_np_matrix, target_raw_dense_matrix=final_learning_sample_data_as_np_matrix)
     
     print (r_test_1)
     
@@ -120,6 +113,9 @@ if __name__ == '__main__':
     m2_basic = np.array ([[2,2,2],[2,2,2]],dtype=float)
     
     r_simple = distance_between (num_labels=2, feature_dim=3, x_raw_dense_matrix=m1_basic, target_raw_dense_matrix=m2_basic)
+    
+    print (r_simple)
+    
     
     
 
