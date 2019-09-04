@@ -60,9 +60,13 @@ class TestStringMethods(unittest.TestCase):
         feature_dim_line_as_list = feature_dim_line.split()
         feature_dim = feature_dim_line_as_list[1]        
         
-    
-   
-        sample_data_without_headers=sample_data[30:]
+        m = re.search(r'[0-9]+\:', sample_data)
+        data_first_char_pos = m.start(0)
+        
+        sample_data_without_feature_index = sample_data[data_first_char_pos:]
+        
+        matrix_data_start=re.search('[0-9]+\:', sample_data)
+        sample_data_without_headers=sample_data[matrix_data_start:]
         sample_data_without_feature_index=re.sub('[0-9]+\:', '', sample_data)
     
         return (num_labels, feature_dim, sample_data_without_feature_index)
