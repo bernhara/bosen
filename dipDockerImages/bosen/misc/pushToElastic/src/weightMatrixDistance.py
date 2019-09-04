@@ -96,7 +96,7 @@ class TestStringMethods(unittest.TestCase):
                               x_raw_dense_matrix=m1_as_np_matrix,
                               target_raw_dense_matrix=m2_as_np_matrix)
         
-        self.assertAlmostEqual(0.0, d, delta=0.0001, msg='got unexpected distance')
+        self.assertAlmostEqual(4.898979485566356, d, delta=0.0001, msg='got unexpected distance')
         
     def test_computation(self):
         
@@ -105,23 +105,8 @@ class TestStringMethods(unittest.TestCase):
     
         d = distance_between (num_labels=2, feature_dim=3, x_raw_dense_matrix=m1_basic, target_raw_dense_matrix=m2_basic)
         
-        self.assertAlmostEqual(0.0, d, delta=0.0001, msg='got unexpected distance')
+        self.assertAlmostEqual(4.89898, d, delta=0.0001, msg='got unexpected distance')
     
 if __name__ == '__main__':
     unittest.main()
-
-if __name__ == '__main__':
-    
-    
-    print (r_test_1)
-    
-    m1_basic = np.array ([[1,1,1],[1,1,1]],dtype=float)
-    m2_basic = np.array ([[3,3,3],[3,3,3]],dtype=float)
-    
-    r_simple = distance_between (num_labels=2, feature_dim=3, x_raw_dense_matrix=m1_basic, target_raw_dense_matrix=m2_basic)
-    
-    print (r_simple)
-    
-    
-    
 
