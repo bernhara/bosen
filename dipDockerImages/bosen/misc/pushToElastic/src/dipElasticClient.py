@@ -189,6 +189,7 @@ if __name__ == "__main__":
         "-f",
         "--feature_dim",
         action="store",
+        type=int,
         dest="feature_dim",
         required=True,
         help="Number of feature in input weight matrix."
@@ -199,6 +200,7 @@ if __name__ == "__main__":
         "--num_labels",
         action="store",
         dest="num_labels",
+        type=int,
         required=True,
         help="Number of labels in input weight matrix."
     )
@@ -262,9 +264,9 @@ if __name__ == "__main__":
     else:
         sample_dt=launch_timestamp_dt
         
-        
+       
     x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
-                                                                              feature_dim=args.feature_dim,
+                                                                              feature_dim=12,#args.feature_dim,
                                                                               petuum_mlr_sample=args.minibatch_weight_matrix)
     
     target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
