@@ -88,6 +88,13 @@ fi
 _not_ended=true
 _nb_sleep_done=0
 
+_correctCygwinVar ()
+{
+    varValue="${1}"
+
+    echo "${varValue}" | sed -e 's|^\$||' -e 's|\r$||'
+}
+
 getFieldValueOnLine ()
 {
     field_line_number=$1
@@ -255,8 +262,18 @@ postStatFilesMainLoop ()
 		    esac
 		fi
 
+		# FIXME: patch for test => correct python result
+		new_es_record_body=$(
+		    sed -e 's/\(datetime.datetime(.*)\)/"2019-09-05T06:27:34.325424ZZ"/g' <<< "${new_es_record_body}"
+		)		    
+		
+
+		new_es_record_json_format=$(
+		    tr \' \" <<< "${new_es_record_body}"
+		)		    
+
 		new_record_body_as_single_line=$(
-		    tr -d '\n' <<< "${new_es_record_body}"
+		    tr -d '\n' <<< "${new_es_record_json_format}"
 		)
 		_es_bulk_data="${_es_bulk_data}{ \"index\": {} }
 ${new_record_body_as_single_line}
@@ -274,14 +291,20 @@ ${new_record_body_as_single_line}
 	    #
 	    if [ -z "${_es_index}" ]
 	    then
-		_es_index=$(
+
+		_es_index=$( \
 		    timeout ${_timeout_before_considering_elasticsearch_KO} \
 			 ${PYTHON} ${PYTHON_MAIN} \
 			    --action=create-index \
 			    --elasticsearch_url="${_elasticsearch_diplog_url}" \
 			    --index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
-			    --utc_timestamp_since_epoch="${elastic_timestamp}"
+			    --utc_timestamp_since_epoch="${elastic_timestamp}" \
 			 )
+
+		if [ $( uname -o ) == "Cygwin" ]
+		then
+		    _es_index=$( _correctCygwinVar "${_es_index}" )
+		fi
 
 		python_status=$?
 		case ${python_status} in
@@ -314,7 +337,13 @@ ${new_record_body_as_single_line}
 
 	    # FIXME: add timeout
 
-	    curl -X POST "${_elasticsearch_diplog_url}/${_es_index}/_doc/_bulk" -H 'Content-Type: application/x-ndjson' --data-binary "${_es_bulk_data}"
+	    if [ -n "${_es_index}" ]
+	    then
+		# we where able to create the index => post to it
+		curl -X POST "${_elasticsearch_diplog_url}/${_es_index}/_doc/_bulk" -H 'Content-Type: application/x-ndjson' --data-binary "${_es_bulk_data}"
+	    else
+		echo "${COMMAND} WARNING. Not Elasticsearch index could be created. Not data are pushed." 1>&2
+	    fi
 	    
 	fi
     done
