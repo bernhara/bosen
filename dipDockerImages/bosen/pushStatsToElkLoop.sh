@@ -22,7 +22,14 @@ _elasticsearch_server_operational=true
 if [ -n "${_do_unit_test}" ]
 then
     # preset some defaults
-    set -- --elasticsearch_url=http://s-ku2raph:9200 --stat_file_prefix=/tmp/zz_ "$@"
+    if [ -z "${STATS_ELASTICSEARCH_URL}" ]
+    then
+	_els_url_arg_value="http://s-eunuc:9200"
+    else
+	_els_url_arg_value="${STATS_ELASTICSEARCH_URL}"
+    fi
+
+    set -- --elasticsearch_url="${_els_url_arg_value}" --stat_file_prefix="${HERE}/misc/pushToElastic/test/test_weitghs_" "$@"
 fi
 
 while [ -n "$1" ]
