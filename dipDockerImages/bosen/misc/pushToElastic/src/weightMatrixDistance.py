@@ -8,15 +8,6 @@ import re
 
 
 
-
-
-#
-# FIXME: end of code which should be removed
-#
-
-
-
-
 def petuum_mlr_sample_data_to_numpy_matrix (num_labels, feature_dim, petuum_mlr_sample):
     
     line_list = petuum_mlr_sample.splitlines()
