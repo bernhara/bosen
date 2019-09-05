@@ -151,12 +151,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     
+    # FIXME: the script does not check that params required by various actions are provided
+    
     parser.add_argument(
         "-H",
         "--elasticsearch_url",
         action="store",
         dest="host",
-        required=True,
         help="The elasticsearch host you wish to connect to.",
     )
     
@@ -193,7 +194,6 @@ if __name__ == "__main__":
         action="store",
         type=int,
         dest="feature_dim",
-        required=True,
         help="Number of feature in input weight matrix."
     )
     
@@ -203,7 +203,6 @@ if __name__ == "__main__":
         action="store",
         dest="num_labels",
         type=int,
-        required=True,
         help="Number of labels in input weight matrix."
     )
     
@@ -212,7 +211,6 @@ if __name__ == "__main__":
         "--minibatch_weight_matrix",
         action="store",
         dest="minibatch_weight_matrix",
-        required=True,
         help="Raw dense matrix generated during minibatch."
     )
     
@@ -221,7 +219,6 @@ if __name__ == "__main__":
         "--target_weight_matrix",
         action="store",
         dest="target_weight_matrix",
-        required=True,
         help="Raw dense final matrix the computation should converge to."
     )                  
     
@@ -246,7 +243,6 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "--action",
-        action="store_true",
         choices=["create-index", "make-es-record-body", "put-distance"],
         dest="action",
         required=True,
@@ -273,7 +269,7 @@ if __name__ == "__main__":
     # create_index action
     # ===================
     #        
-    if args.action == "create_index":
+    if args.action == "create-index":
 
         # instantiate es client, connects to localhost:9200 by default
         es = Elasticsearch(args.host)
@@ -284,7 +280,8 @@ if __name__ == "__main__":
             print ("FATAL ERROR: unable to ping Elasticsearch DB server " + args.host, file=sys.stderr)
             sys.exit(1)
             
-        checkOrCeateEsIndex (es, index_prefix=args.index_prefix,sample_dt=sample_dt)
+        new_es_index = checkOrCeateEsIndex (es, index_prefix=args.index_prefix,sample_dt=sample_dt)
+        print (new_es_index)
         
         sys.exit(0)
         
