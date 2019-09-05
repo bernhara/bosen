@@ -61,7 +61,22 @@ then
 fi
 
 
-: ${PYTHON="${HERE}/misc/pushToElastic/.venv/Scripts/python"}
+#
+# search for python binary file
+#
+
+if [ -z "${PYTHON}" ]
+then
+    for p in "${HERE}/misc/pushToElastic/.venv/Scripts/python" "${HERE}/misc/pushToElastic/.venv/bin/python"
+    do
+	if [ -x "${p}" ]
+	then
+	    PYTHON="${p}"
+	    break
+	fi
+    done
+fi
+
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
