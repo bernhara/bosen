@@ -217,6 +217,7 @@ postStatFilesMainLoop ()
 		then
 		    timeout ${_timeout_before_considering_elasticsearch_KO} \
 			${PYTHON} ${PYTHON_MAIN} \
+			--action=put-distance \    
 			--elasticsearch_url=${_elasticsearch_diplog_url} \
 			--index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
 			--utc_timestamp_since_epoch="${elastic_timestamp}" \

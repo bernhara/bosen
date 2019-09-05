@@ -119,21 +119,33 @@ def createElasticsearchIndexWithMapping (es, index):
         
     es.indices.create(index=index, body=create_index_body)
 
-
-def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
+def checkOrCeateEsIndex (es, index_prefix, sample_dt):
     
-    
- 
     index = getElasticSampleIndex(sample_dt, index_prefix)
     index_exists = es.indices.exists(index=index)
     if not index_exists:
         # if it does not exist, create is previouly to ensure correct mapping
         createElasticsearchIndexWithMapping (es, index)
+        
+    return index    
+
+def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
+    
+    
+ 
+    index = checkOrCeateEsIndex(es, index_prefix, sample_dt)
       
     body = getElasticSampleDataBody(worker_name, distance, sample_dt)
     
     es.index(index=index, body=body)
-
+    
+def getNewRecordBody (worker_name, distance, sample_dt):
+    
+    body = getElasticSampleDataBody(worker_name, distance, sample_dt)
+    
+    
+    
+    return body
 
 if __name__ == "__main__":
 
@@ -239,9 +251,27 @@ if __name__ == "__main__":
         dest="debug",
         default=False,
         help="Activate debug mode."
-    )    
+    )  
+    
+    
+    parser.add_argument(
+        "--action",
+        action="store_true",
+        choices=["create-index", "make-es-record-body", "put-distance"],
+        dest="action",
+        required=True,
+        help="The action to perform."
+    )  
+          
         
     args = parser.parse_args()
+    
+    if args.timestamp:
+        sample_dt=datetime.utcfromtimestamp(args.timestamp)
+    else:
+        sample_dt=launch_timestamp_dt
+        
+   
 
     if args.debug:
         # get trace logger and set level
@@ -249,35 +279,60 @@ if __name__ == "__main__":
         tracer.setLevel(logging.DEBUG)
         tracer.addHandler(logging.StreamHandler(sys.stderr))
 
-    # instantiate es client, connects to localhost:9200 by default
-    es = Elasticsearch(args.host)
-    
-    if not es.ping():
-    
-        # unable to connect to ES server
-        print ("FATAL ERROR: unable to ping Elasticsearch DB server " + args.host, file=sys.stderr)
-        sys.exit(1)
-    
-    
-    if args.timestamp:
-        sample_dt=datetime.utcfromtimestamp(args.timestamp)
-    else:
-        sample_dt=launch_timestamp_dt
-        
-       
-    x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
-                                                                              feature_dim=args.feature_dim,
-                                                                              petuum_mlr_sample=args.minibatch_weight_matrix)
-    
-    target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
-                                                                                   feature_dim=args.feature_dim,
-                                                                                   petuum_mlr_sample=args.target_weight_matrix)   
-        
-    distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=x_np_matrix,
-                                                      target_raw_dense_matrix=target_nm_matrix,
-                                                      num_labels=args.num_labels,
-                                                      feature_dim=args.feature_dim)
-            
-    putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+    #
+    # create_index action
+    # ===================
+    #        
+    if args.action == "create_index":
 
-    sys.exit(0)
+        # instantiate es client, connects to localhost:9200 by default
+        es = Elasticsearch(args.host)
+        
+        if not es.ping():
+        
+            # unable to connect to ES server
+            print ("FATAL ERROR: unable to ping Elasticsearch DB server " + args.host, file=sys.stderr)
+            sys.exit(1)
+            
+        checkOrCeateEsIndex (es, index_prefix=args.index_prefix,sample_dt=sample_dt)
+        
+        sys.exit(0)
+        
+    if args.action == "put-distance":
+    
+        x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                                  feature_dim=args.feature_dim,
+                                                                                  petuum_mlr_sample=args.minibatch_weight_matrix)
+        
+        target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                                       feature_dim=args.feature_dim,
+                                                                                       petuum_mlr_sample=args.target_weight_matrix)   
+            
+        distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=x_np_matrix,
+                                                          target_raw_dense_matrix=target_nm_matrix,
+                                                          num_labels=args.num_labels,
+                                                          feature_dim=args.feature_dim)
+                
+        putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+    
+        sys.exit(0)
+
+    if args.action == "make-es-record-body":
+    
+        x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                                  feature_dim=args.feature_dim,
+                                                                                  petuum_mlr_sample=args.minibatch_weight_matrix)
+        
+        target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
+                                                                                       feature_dim=args.feature_dim,
+                                                                                       petuum_mlr_sample=args.target_weight_matrix)   
+            
+        distance = weightMatrixDistance.distance_between(x_raw_dense_matrix=x_np_matrix,
+                                                          target_raw_dense_matrix=target_nm_matrix,
+                                                          num_labels=args.num_labels,
+                                                          feature_dim=args.feature_dim)
+                
+        record = getNewRecordBody (worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+        print (record)
+        
+        sys.exit(0)
