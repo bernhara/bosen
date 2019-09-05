@@ -29,7 +29,9 @@ then
 	_els_url_arg_value="${STATS_ELASTICSEARCH_URL}"
     fi
 
-    set -- --elasticsearch_url="${_els_url_arg_value}" --stat_file_prefix="${HERE}/misc/pushToElastic/test/test_weitghs_" "$@"
+    _unit_test_tmp_dir=/tmp/_unit_test
+
+    set -- --elasticsearch_url="${_els_url_arg_value}" --stat_file_prefix="${_unit_test_tmp_dir}/test_weitghs_" "$@"
 fi
 
 while [ -n "$1" ]
@@ -59,7 +61,7 @@ then
 fi
 
 
-: ${PYTHON="${HERE}/misc/pushToElastic/.venv/bin/python"}
+: ${PYTHON="${HERE}/misc/pushToElastic/.venv/Scripts/python"}
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
 : ${MAX_WAIT_DELAY_FOR_FILES:=60}
@@ -272,6 +274,21 @@ feature_dim: 54
 if [ -n "${_do_unit_test}" ]
 then
 
+    _unit_test_tmp_dir=/tmp/_unit_test
+    mkdir -p "${_unit_test_tmp_dir}"
+    rm -f "${_unit_test_tmp_dir}"/*
+    cp "${HERE}/misc/pushToElastic/test/test_weitghs"* "${_unit_test_tmp_dir}"
+
+    MAX_WAIT_DELAY_FOR_FILES=2
+    STATS_TARGET_BOSEN_WEIGHTS=$( cat "${HERE}/misc/pushToElastic/test/final_learning_test_weitghs" )
+
+    exit 1
+
+fi
+
+if false && [ -n "${_do_unit_test}" ]
+then
+
     timestamp_suffix="$( date --utc '+%s' )123456"
 
     unit_test_file_name="${_stat_file_prefix}${timestamp_suffix}_$$"
@@ -280,7 +297,7 @@ then
     touch "${_stat_file_prefix}${END_TAG_SUFFIX}"
     
     MAX_WAIT_DELAY_FOR_FILES=2
-    STATS_TARGET_BOSEN_WEIGHTS="${m_final_learning_string_for_unit_test}"
+    STATS_TARGET_BOSEN_WEIGHTS=$( cat "${HERE}/misc/pushToElastic/test/final_learning_test_weitghs" )
 
 fi
 
