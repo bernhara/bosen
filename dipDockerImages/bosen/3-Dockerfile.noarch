@@ -10,14 +10,30 @@ RUN \
 #
 
 #
-# copy each python project which needs it's own python interpreter to be regenerated
+# copy each python project Pipfile which needs it's own python interpreter to be regenerated
 #
-COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
+COPY tmp_root/home/dip/bin/misc/pushToElastic/Pipfile /home/dip/bin/misc/pushToElastic/
+
 # generate Python virtual env
+RUN mkdir /home/dip/bin/misc/pushToElastic/.venv
 RUN \
     cd /home/dip/bin/misc/pushToElastic && \
     PIPENV_COLORBLIND=yes pipenv --bare --clear install --deploy --python /usr/bin/python3 && \
     rm -r ${HOME}/.cache
+
+#
+# Install user provided components
+#
+
+#
+# Install dataset
+#
+COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
+
+#
+# Install use code
+#
+COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
 
 # copy binary files
 COPY tmp_root/home/dip/bin/mlr_main /home/dip/bin/ 
@@ -27,9 +43,6 @@ COPY tmp_root/home/dip/bin/mlrWrapper.sh /home/dip/bin/
 COPY tmp_root/home/dip/bin/trainWorker.sh /home/dip/bin/
 COPY tmp_root/home/dip/bin/testit.sh /home/dip/bin/
 COPY tmp_root/home/dip/bin/pushStatsToElkLoop.sh /home/dip/bin/
-
-#copy dataset
-COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
 
 CMD ["/home/dip/bin/testit.sh"]
 
