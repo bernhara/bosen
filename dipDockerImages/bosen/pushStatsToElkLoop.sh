@@ -231,33 +231,20 @@ postStatFilesMainLoop ()
 		if ${_elasticsearch_server_operational}
 		then
 		    new_es_record_body=$(
-			timeout ${_timeout_before_considering_elasticsearch_KO} \
-				${PYTHON} ${PYTHON_MAIN} \
-				   --action=make-es-record-body \
-				   --index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
-				   --utc_timestamp_since_epoch="${elastic_timestamp}" \
-				   --worker_name="thread_${thread_id}" \
-				   \
-				   --num_labels="${num_labels}" \
-				   --feature_dim="${feature_dim}" \
-				   --minibatch_weight_matrix="${matrix}" \
-				   --target_weight_matrix="${_target_weight_matrix}"
-				 )
+			${PYTHON} ${PYTHON_MAIN} \
+			       --action=make-es-record-body \
+			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
+			       --worker_name="thread_${thread_id}" \
+			       \
+			       --num_labels="${num_labels}" \
+			       --feature_dim="${feature_dim}" \
+			       --minibatch_weight_matrix="${matrix}" \
+			       --target_weight_matrix="${_target_weight_matrix}"
+		    )
 
 		    python_status=$?
 
 		    case ${python_status} in
-			124)
-			    # we got a timeout
-			    # => we consider Elasticsearch server to slow and we give up
-			    #
-			    # NOTE:
-			    #   we do not exit this process to continue remover generated stat_file.
-			    #   this prevents possible filesystem growth problems
-
-			    echo "${COMMAND} FATAL ERROR. Timeout reach while running elasticsearch push client. Skip future calls." 1>&2
-			    _elasticsearch_server_operational=false
-			    ;;
 			0)
 			    #OK
 			    ;;
@@ -275,6 +262,9 @@ postStatFilesMainLoop ()
 ${new_record_body_as_single_line}
 "
 
+		#
+		# file processed => rm
+		#
 		rm "${stat_file}"
 
 	    done
