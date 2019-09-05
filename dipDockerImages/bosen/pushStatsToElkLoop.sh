@@ -282,8 +282,6 @@ then
     MAX_WAIT_DELAY_FOR_FILES=2
     STATS_TARGET_BOSEN_WEIGHTS=$( cat "${HERE}/misc/pushToElastic/test/final_learning_test_weitghs" )
 
-    exit 1
-
 fi
 
 if false && [ -n "${_do_unit_test}" ]
