@@ -266,7 +266,7 @@ if __name__ == "__main__":
         
        
     x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
-                                                                              feature_dim=12,#args.feature_dim,
+                                                                              feature_dim=args.feature_dim,
                                                                               petuum_mlr_sample=args.minibatch_weight_matrix)
     
     target_nm_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
