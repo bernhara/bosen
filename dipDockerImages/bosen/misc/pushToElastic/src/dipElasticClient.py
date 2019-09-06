@@ -191,6 +191,14 @@ if __name__ == "__main__":
     )
     
     parser.add_argument(
+        "--thread_id",
+        action="store",
+        dest="worker_name",
+        default="test_worker",
+        help="The name of the client."
+    )    
+    
+    parser.add_argument(
         "-f",
         "--feature_dim",
         action="store",
@@ -245,7 +253,7 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "--action",
-        choices=["create-index", "make-es-record-body", "put-distance"],
+        choices=["create_index", "make_es_record_body", "put_distance"],
         dest="action",
         required=True,
         help="The action to perform."
