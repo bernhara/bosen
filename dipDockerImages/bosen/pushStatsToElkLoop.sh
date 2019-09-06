@@ -34,6 +34,8 @@ then
 	_els_url_arg_value="${STATS_ELASTICSEARCH_URL}"
     fi
 
+    ELASTICSEARCH_INDEX_PREFIX="unit-test-dip-stat-weight-distance-"
+
     _unit_test_tmp_dir=/tmp/_unit_test
 
     set -- --elasticsearch_url="${_els_url_arg_value}" --stat_file_prefix="${_unit_test_tmp_dir}/test_weitghs_" "$@"
@@ -259,6 +261,7 @@ postStatFilesMainLoop ()
 			       --action=make_es_record_body \
 			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
 			       --worker_name="${STATS_WORKER_NAME}" \
+			       --thread_id="${thread_id}" \
 			       \
 			       --num_labels="${num_labels}" \
 			       --feature_dim="${feature_dim}" \
