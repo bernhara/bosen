@@ -263,6 +263,7 @@ postStatFilesMainLoop ()
 		fi
 
 		new_record_body_as_single_line=$(
+		    # take in account ^M for Windows/Cygwin configurations
 		    echo "${new_es_record_json_format}" | \
 			 tr -d '\n' | \
 			 tr -d ''
