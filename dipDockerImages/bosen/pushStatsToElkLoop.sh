@@ -256,7 +256,7 @@ postStatFilesMainLoop ()
 		then
 		    new_es_record_json_format=$(
 			${PYTHON} ${PYTHON_MAIN} \
-			       --action=make-es-record-body \
+			       --action=make_es_record_body \
 			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
 			       --worker_name="${STATS_WORKER_NAME}" \
 			       \
@@ -312,7 +312,7 @@ ${new_record_body_as_single_line}
 		_es_index=$( \
 		    timeout ${_timeout_before_considering_elasticsearch_KO} \
 			 ${PYTHON} ${PYTHON_MAIN} \
-			    --action=create-index \
+			    --action=create_index \
 			    --elasticsearch_url="${_elasticsearch_diplog_url}" \
 			    --index_prefix="${ELASTICSEARCH_INDEX_PREFIX}" \
 			    --utc_timestamp_since_epoch="${elastic_timestamp}" \
