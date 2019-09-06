@@ -43,12 +43,13 @@ def getElasticTimestamp (dt_value):
     return timestamp
 
 
-def getElasticSampleDataBody (worker_name, distance, sample_dt, comment="no comment!"):
+def getElasticSampleDataBody (worker_name, thread_id, distance, sample_dt, comment="no comment!"):
     
     global launch_timestamp_dt
     
     body={
        "worker_name": worker_name,
+       "thread_id": thread_id,
        "distance": distance,
        "label": "label for " + worker_name,
        "sample_date": "is this field useful??",
@@ -141,9 +142,9 @@ def putDistanceToEs (es, index_prefix, worker_name, distance, sample_dt):
     
     es.index(index=index, body=body)
     
-def getNewRecordBody (worker_name, distance, sample_dt):
+def getNewRecordBody (worker_name, thread_id, distance, sample_dt):
     
-    body = getElasticSampleDataBody(worker_name, distance, sample_dt)
+    body = getElasticSampleDataBody(worker_name, thread_id, distance, sample_dt)
     
     
     
@@ -193,9 +194,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--thread_id",
         action="store",
-        dest="worker_name",
-        default="test_worker",
-        help="The name of the client."
+        dest="thread_id",
+        default="undefined",
+        help="Identifier of thread having produced the information."
     )    
     
     parser.add_argument(
@@ -314,7 +315,12 @@ if __name__ == "__main__":
                                                           num_labels=args.num_labels,
                                                           feature_dim=args.feature_dim)
                 
-        putDistanceToEs (es, index_prefix=args.index_prefix, worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+        putDistanceToEs (es,
+                         index_prefix=args.index_prefix,
+                         worker_name=args.worker_name,
+                         thread_id=args.thread_id,
+                         distance=distance,
+                         sample_dt=sample_dt)
     
         sys.exit(0)
 
@@ -337,7 +343,10 @@ if __name__ == "__main__":
                                                           num_labels=args.num_labels,
                                                           feature_dim=args.feature_dim)
                 
-        record = getNewRecordBody (worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+        record = getNewRecordBody (worker_name=args.worker_name,
+                                   thread_id=args.thread_id,
+                                   distance=distance,
+                                   sample_dt=sample_dt)
         
         json_record = json.dumps(record)
         print (json_record)
