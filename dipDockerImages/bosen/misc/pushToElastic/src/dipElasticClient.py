@@ -10,16 +10,10 @@ import json
 
 import weightMatrixDistance
 
-# # by default we connect to localhost:9200
-# es = Elasticsearch()
-# 
-# # create an index in elasticsearch, ignore status code 400 (index already exists)
-# es.indices.create(index='my-index', ignore=400)
-# {'acknowledged': True, 'shards_acknowledged': True, 'index': 'my-index'}
-
-# datetimes will be serialized
-
+#
 # globals
+# =======
+#
 
 launch_timestamp_dt = datetime.utcnow()
 
@@ -86,36 +80,6 @@ def createElasticsearchIndexWithMapping (es, index):
                         }
                     }
                 }                             
-#                 "comment": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "label": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "sample_date": {
-#                     "type": "text",
-#                     "fields": {
-#                         "keyword": {
-#                             "type": "keyword",
-#                             "ignore_above": 256
-#                             }
-#                         }
-#                     },
-#                 "test_time": {
-#                     "type": "date"
-#                      },
             }
         }
     }
