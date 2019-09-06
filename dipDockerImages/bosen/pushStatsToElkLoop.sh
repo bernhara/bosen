@@ -250,10 +250,6 @@ postStatFilesMainLoop ()
 		# compute a new ES record
 		#
 
-		#
-		# TODO: add thread id field
-		#
-
 		if ${_elasticsearch_server_operational}
 		then
 		    new_es_record_json_format=$(
