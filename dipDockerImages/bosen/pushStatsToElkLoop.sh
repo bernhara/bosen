@@ -20,6 +20,8 @@ _elasticsearch_server_operational=true
 : ${_timeout_before_considering_elasticsearch_KO:=10s}
 _es_index=''
 
+_do_log=true
+
 if [ -n "${_do_unit_test}" ]
 then
     # preset some defaults
@@ -196,6 +198,14 @@ postStatFilesMainLoop ()
 
 	    _es_bulk_data=''
 	    
+	    if ${_do_log}
+	    then
+		echo -n "[Stat files subset: "
+		echo -n $( wc -l <<< "${ordered_stat_file_list}" )
+		echo -n "]"
+	    fi
+
+
 	    for stat_file in ${ordered_stat_file_list}
 	    do
 
@@ -277,6 +287,12 @@ ${new_record_body_as_single_line}
 		#
 		rm "${stat_file}"
 
+		if ${_do_log}
+		then
+		    echo -n "."
+		fi
+
+
 	    done
 
 	    #
@@ -333,11 +349,17 @@ ${new_record_body_as_single_line}
 	    if [ -n "${_es_index}" ]
 	    then
 		# we where able to create the index => post to it
-		curl -X POST "${_elasticsearch_diplog_url}/${_es_index}/_doc/_bulk" -H 'Content-Type: application/x-ndjson' --data-binary "${_es_bulk_data}"
+		es_push_result=$(
+		    curl --silent -X POST "${_elasticsearch_diplog_url}/${_es_index}/_doc/_bulk" -H 'Content-Type: application/x-ndjson' --data-binary "${_es_bulk_data}"
+		)
 	    else
 		echo "${COMMAND} WARNING. Not Elasticsearch index could be created. Not data are pushed." 1>&2
 	    fi
 	    
+	    if ${_do_log}
+	    then
+		echo "[Pushed]"
+	    fi
 	fi
     done
 }
