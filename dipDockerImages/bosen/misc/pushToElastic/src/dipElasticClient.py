@@ -110,8 +110,6 @@ def getNewRecordBody (worker_name, thread_id, distance, sample_dt):
     
     body = getElasticSampleDataBody(worker_name, thread_id, distance, sample_dt)
     
-    
-    
     return body
 
 if __name__ == "__main__":
@@ -241,10 +239,10 @@ if __name__ == "__main__":
         tracer.addHandler(logging.StreamHandler(sys.stderr))
 
     #
-    # create-index action
+    # create_index action
     # ===================
     #        
-    if args.action == "create-index":
+    if args.action == "create_index":
 
         # instantiate es client, connects to localhost:9200 by default
         es = Elasticsearch(args.host)
@@ -261,10 +259,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     #
-    # put-distance action
+    # put_distance action
     # ===================
     #                
-    if args.action == "put-distance":
+    if args.action == "put_distance":
     
         x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
                                                                                   feature_dim=args.feature_dim,
@@ -289,10 +287,10 @@ if __name__ == "__main__":
         sys.exit(0)
 
     #
-    # make-es-record-body action
+    # make_es_record_body action
     # ==========================
     #             
-    if args.action == "make-es-record-body":
+    if args.action == "make_es_record_body":
     
         x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
                                                                                   feature_dim=args.feature_dim,
