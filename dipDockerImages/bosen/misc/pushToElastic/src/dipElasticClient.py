@@ -6,6 +6,8 @@ import argparse
 from datetime import datetime
 from elasticsearch import Elasticsearch
 
+import json
+
 import weightMatrixDistance
 
 # # by default we connect to localhost:9200
@@ -50,7 +52,7 @@ def getElasticSampleDataBody (worker_name, distance, sample_dt, comment="no comm
        "distance": distance,
        "label": "label for " + worker_name,
        "sample_date": "is this field useful??",
-       "test_time": launch_timestamp_dt,
+       "test_time": str(launch_timestamp_dt),
        "comment": comment,
        "@timestamp": getElasticTimestamp(sample_dt)
     }
@@ -266,7 +268,7 @@ if __name__ == "__main__":
         tracer.addHandler(logging.StreamHandler(sys.stderr))
 
     #
-    # create_index action
+    # create-index action
     # ===================
     #        
     if args.action == "create-index":
@@ -284,7 +286,11 @@ if __name__ == "__main__":
         print (new_es_index)
         
         sys.exit(0)
-        
+
+    #
+    # put-distance action
+    # ===================
+    #                
     if args.action == "put-distance":
     
         x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
@@ -304,6 +310,10 @@ if __name__ == "__main__":
     
         sys.exit(0)
 
+    #
+    # make-es-record-body action
+    # ==========================
+    #             
     if args.action == "make-es-record-body":
     
         x_np_matrix = weightMatrixDistance.petuum_mlr_sample_data_to_numpy_matrix(num_labels=args.num_labels,
@@ -320,6 +330,8 @@ if __name__ == "__main__":
                                                           feature_dim=args.feature_dim)
                 
         record = getNewRecordBody (worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
+        
+        json_record = json.dumps(record)
         print (record)
         
         sys.exit(0)
