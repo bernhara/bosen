@@ -332,6 +332,6 @@ if __name__ == "__main__":
         record = getNewRecordBody (worker_name=args.worker_name, distance=distance, sample_dt=sample_dt)
         
         json_record = json.dumps(record)
-        print (record)
+        print (json_record)
         
         sys.exit(0)
