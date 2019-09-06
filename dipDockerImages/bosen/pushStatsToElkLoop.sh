@@ -22,6 +22,8 @@ _es_index=''
 
 _do_log=true
 
+: ${STATS_WORKER_NAME:="$( uname -n )"}
+
 if [ -n "${_do_unit_test}" ]
 then
     # preset some defaults
@@ -246,13 +248,17 @@ postStatFilesMainLoop ()
 		# compute a new ES record
 		#
 
+		#
+		# TODO: add thread id field
+		#
+
 		if ${_elasticsearch_server_operational}
 		then
 		    new_es_record_json_format=$(
 			${PYTHON} ${PYTHON_MAIN} \
 			       --action=make-es-record-body \
 			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
-			       --worker_name="thread_${thread_id}" \
+			       --worker_name="${STATS_WORKER_NAME}" \
 			       \
 			       --num_labels="${num_labels}" \
 			       --feature_dim="${feature_dim}" \
