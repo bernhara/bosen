@@ -237,7 +237,7 @@ postStatFilesMainLoop ()
 
 		if ${_elasticsearch_server_operational}
 		then
-		    new_es_record_body=$(
+		    new_es_record_json_format=$(
 			${PYTHON} ${PYTHON_MAIN} \
 			       --action=make-es-record-body \
 			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
@@ -262,18 +262,10 @@ postStatFilesMainLoop ()
 		    esac
 		fi
 
-		# FIXME: patch for test => correct python result
-		new_es_record_body=$(
-		    sed -e 's/\(datetime.datetime(.*)\)/"2019-09-05T06:27:34.325424ZZ"/g' <<< "${new_es_record_body}"
-		)		    
-		
-
-		new_es_record_json_format=$(
-		    tr \' \" <<< "${new_es_record_body}"
-		)		    
-
 		new_record_body_as_single_line=$(
-		    tr -d '\n' <<< "${new_es_record_json_format}"
+		    echo "${new_es_record_json_format}" | \
+			 tr -d '\n' | \
+			 tr -d ''
 		)
 		_es_bulk_data="${_es_bulk_data}{ \"index\": {} }
 ${new_record_body_as_single_line}
