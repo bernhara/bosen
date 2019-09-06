@@ -200,8 +200,9 @@ postStatFilesMainLoop ()
 	    
 	    if ${_do_log}
 	    then
+		_nb_remaining_stat_files=$( wc -l <<< "${ordered_stat_file_list}" )
 		echo -n "[Stat files subset: "
-		echo -n $( wc -l <<< "${ordered_stat_file_list}" )
+		echo -n ${_nb_remaining_stat_files}
 		echo -n "]"
 	    fi
 
@@ -289,7 +290,8 @@ ${new_record_body_as_single_line}
 
 		if ${_do_log}
 		then
-		    echo -n "."
+		    echo -n "(${_nb_remaining_stat_files})"
+		    _nb_remaining_stat_files=$(( ${_nb_remaining_stat_files} - 1 ))
 		fi
 
 
