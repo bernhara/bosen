@@ -52,7 +52,7 @@ def getElasticSampleDataBody (worker_name, distance, sample_dt, comment="no comm
        "distance": distance,
        "label": "label for " + worker_name,
        "sample_date": "is this field useful??",
-       "test_time": str(launch_timestamp_dt),
+       "test_time": getElasticTimestamp(launch_timestamp_dt),
        "comment": comment,
        "@timestamp": getElasticTimestamp(sample_dt)
     }
