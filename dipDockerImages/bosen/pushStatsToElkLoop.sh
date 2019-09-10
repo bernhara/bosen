@@ -17,7 +17,7 @@ HERE=$( dirname "$0" )
 _elasticsearch_diplog_url=''
 _stat_file_prefix=''
 _elasticsearch_server_operational=true
-: ${_timeout_before_considering_elasticsearch_KO:=10s}
+: ${_timeout_before_considering_elasticsearch_KO:=60s}
 _es_index=''
 
 _do_log=true
@@ -91,6 +91,8 @@ fi
 
 : ${ELASTICSEARCH_INDEX_PREFIX:="dip-stat-weight-distance-"}
 
+: ${BULK_SIZE:=20}
+
 _not_ended=true
 _nb_sleep_done=0
 
@@ -158,7 +160,9 @@ postStatFilesMainLoop ()
 		-f \
 		"${_stat_file_prefix}"* 2>/dev/null \
 		| \
-		grep -v "${_stat_file_prefix}${END_TAG_SUFFIX}"
+		grep -v "${_stat_file_prefix}${END_TAG_SUFFIX}" \
+		| \
+		head -${BULK_SIZE}
 	)
 	if [ -z "${stat_file_list}" ]
 	then
@@ -205,9 +209,9 @@ postStatFilesMainLoop ()
 	    if ${_do_log}
 	    then
 		_nb_remaining_stat_files=$( wc -l <<< "${ordered_stat_file_list}" )
-		echo -n "[Stat files subset: "
-		echo -n ${_nb_remaining_stat_files}
-		echo -n "]"
+		echo -n "[Stat files subset: " 1>&2
+		echo -n ${_nb_remaining_stat_files}  1>&2
+		echo -n "]"  1>&2
 	    fi
 
 
@@ -255,7 +259,6 @@ postStatFilesMainLoop ()
 		    new_es_record_json_format=$(
 			${PYTHON} ${PYTHON_MAIN} \
 			       --action=make_es_record_body \
-			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
 			       --worker_name="${STATS_WORKER_NAME}" \
 			       --thread_id="${thread_id}" \
 			       \
@@ -264,6 +267,8 @@ postStatFilesMainLoop ()
 			       --minibatch_weight_matrix="${matrix}" \
 			       --target_weight_matrix="${_target_weight_matrix}"
 		    )
+
+#!!			       --utc_timestamp_since_epoch="${elastic_timestamp}" \
 
 		    python_status=$?
 
@@ -295,7 +300,7 @@ ${new_record_body_as_single_line}
 
 		if ${_do_log}
 		then
-		    echo -n "(${_nb_remaining_stat_files})"
+		    echo -n "(${_nb_remaining_stat_files})" 1>&2
 		    _nb_remaining_stat_files=$(( ${_nb_remaining_stat_files} - 1 ))
 		fi
 
@@ -365,7 +370,7 @@ ${new_record_body_as_single_line}
 	    
 	    if ${_do_log}
 	    then
-		echo "[Pushed]"
+		echo "[Pushed]" 1>&2
 	    fi
 	fi
     done
