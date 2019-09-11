@@ -87,7 +87,7 @@ fi
 
 : ${PYTHON_MAIN:="${HERE}/misc/pushToElastic/src/dipElasticClient.py"}
 
-: ${MAX_WAIT_DELAY_FOR_FILES:=60}
+: ${MAX_WAITWAIT_DELAY_FOR_FILES:=60}
 : ${END_TAG_SUFFIX:='__END__'}
 
 : ${ELASTICSEARCH_INDEX_PREFIX:="dip-stat-weight-distance-"}
@@ -213,6 +213,11 @@ postStatFilesMainLoop ()
 	else
 
 	    # we got a list of stat files
+
+	    #
+	    # reset timeout counter
+	    #
+	    _nb_sleep_done=0
 
 	    # we reorder the list, based on a subpart containing the timestamp of the file
 	    ordered_stat_file_list=$(
