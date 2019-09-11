@@ -134,15 +134,35 @@ getDenseRawMatrix ()
 }
 
 
-_current_score=0
+#
+# simulation utilities
+#
+
+: ${_max_int_score:=100}
+: ${_start_int_score:=40}
+
+_current_score="${_start_int_score}"
 _next_O4H_quote ()
 {
-    current_quote="$1"
+    previous_score="$1"
 
-    new_quote=$( awk "{ print ${current_quote} + 1.70 }" <<< '' )
+    delta_to_max_score=$(( _max_int_score - previous_score ))
+    random_increment=$(( ( $RANDOM % delta_to_max_score ) / 10 ))
 
-    echo "${new_quote}"
+    new_score=$(( previous_score + random_increment ))
+
+    echo "${new_score}"
 }
+
+
+set -x
+for i in $(seq 10 )
+do
+
+    _current_score=$( _next_O4H_quote $_current_score )
+    echo $_current_score
+done
+exit 1
 
 #
 # main
@@ -282,7 +302,8 @@ postStatFilesMainLoop ()
 
 			set -x
 			_current_score=$( _next_O4H_quote "${_current_score}" )
-			simulated_score="${_current_score}"
+			# get a float from large int
+			simulated_score="$( awk "{ print ${_current_score} / 100 }" <<< '' )
 			set +x
 
 			current_time_stamp_in_el_format=$( date -u '+%Y-%m-%dT%H:%M:%SZ' )
