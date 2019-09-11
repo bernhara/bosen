@@ -135,15 +135,14 @@ getDenseRawMatrix ()
 
 
 _current_quote=0
-_simulated_O4H_quote ()
+_next_O4H_quote ()
 {
-    _new_quote=$( awk "{ print ${_last_quote} + 1.70 }" <<< '' )
+    current_quote="$1"
 
-    _current_quote="${_new_quote}"
+    new_quote=$( awk "{ print ${current_quote} + 1.70 }" <<< '' )
 
-    echo "${_current_quote}"
+    echo "${new_quote}"
 }
-
 
 #
 # main
@@ -281,11 +280,17 @@ postStatFilesMainLoop ()
 			# no stat has been generated up to now
 			# generate a single record
 
+			set -x
+			_current_quote=$( _next_O4H_quote "${_current_quote}" )
+			echo "XXXXXX${_current_quote}YYYYYYYY"
+			simulated_score="${_current_quote}"
+			set +x
+
 			current_time_stamp_in_el_format=$( date -u '+%Y-%m-%dT%H:%M:%SZ' )
 			new_es_record_json_format="{
 \"worker_name\": \"${STATS_WORKER_NAME}\",
 \"thread_id\": \"$$\",
-\"distance\": \"$( _simulated_O4H_quote )\",
+\"distance\": \"${simulated_score}\",
 \"label\": \"label for ${STATS_WORKER_NAME}\",
 \"sample_date\": \"is this field useful??\",
 \"test_time\": \"${current_time_stamp_in_el_format}\",
