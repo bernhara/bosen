@@ -155,15 +155,6 @@ _next_O4H_quote ()
 }
 
 
-set -x
-for i in $(seq 10 )
-do
-
-    _current_score=$( _next_O4H_quote $_current_score )
-    echo $_current_score
-done
-exit 1
-
 #
 # main
 #
