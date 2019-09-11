@@ -134,7 +134,7 @@ getDenseRawMatrix ()
 }
 
 
-_current_quote=0
+_current_score=0
 _next_O4H_quote ()
 {
     current_quote="$1"
@@ -281,9 +281,8 @@ postStatFilesMainLoop ()
 			# generate a single record
 
 			set -x
-			_current_quote=$( _next_O4H_quote "${_current_quote}" )
-			echo "XXXXXX${_current_quote}YYYYYYYY"
-			simulated_score="${_current_quote}"
+			_current_score=$( _next_O4H_quote "${_current_score}" )
+			simulated_score="${_current_score}"
 			set +x
 
 			current_time_stamp_in_el_format=$( date -u '+%Y-%m-%dT%H:%M:%SZ' )
