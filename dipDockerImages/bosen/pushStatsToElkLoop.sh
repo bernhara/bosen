@@ -138,7 +138,6 @@ _current_quote=0
 _simulated_O4H_quote ()
 {
     _new_quote=$( awk "{ print ${_last_quote} + 1.70 }" <<< '' )
-EOF
 
     _current_quote="${_new_quote}"
 
