@@ -477,19 +477,4 @@ then
 
 fi
 
-if false && [ -n "${_do_unit_test}" ]
-then
-
-    timestamp_suffix="$( date --utc '+%s' )123456"
-
-    unit_test_file_name="${_stat_file_prefix}${timestamp_suffix}_$$"
-
-    cat <<< "${m_string_for_unit_test}" > "${unit_test_file_name}"
-    touch "${_stat_file_prefix}${END_TAG_SUFFIX}"
-    
-    MAX_WAIT_DELAY_FOR_FILES=2
-    STATS_TARGET_BOSEN_WEIGHTS=$( cat "${HERE}/misc/pushToElastic/test/final_learning_test_weitghs" )
-
-fi
-
 postStatFilesMainLoop
