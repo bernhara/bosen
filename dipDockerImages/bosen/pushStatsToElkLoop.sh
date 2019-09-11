@@ -149,7 +149,7 @@ _next_O4H_quote ()
     delta_to_max_score=$(( _max_int_score - previous_score ))
     random_increment=$(( ( $RANDOM % delta_to_max_score ) / 10 ))
 
-    new_score=$(( previous_score + random_increment ))
+    new_score=$(( previous_score - 50 + random_increment ))
 
     echo "${new_score}"
 }
@@ -201,6 +201,7 @@ postStatFilesMainLoop ()
 		then
 		    # if we did not find stat files for more than ${MAX_WAIT_DELAY_FOR_FILES}
 		    # we abandon, but it's an error
+		    echo "FATAL: did not receive stat files with the delay of ${MAX_WAIT_DELAY_FOR_FILES} s." 1>&2
 		    exit 1
 		else
 		    # if we are still in reasonnable delays, we keep on waiting for new stat files
