@@ -32,21 +32,28 @@ mkdir -p "${tmp_root}/home/dip/bin"
 	--rm \
 	-v ${ABS_HERE}/tmp_out:/tmp_out \
 	"dip_bosen_compiler:latest" \
-	/bin/bash -c "cp -r /PETUUM/bosen/app/mlr/bin /tmp_out; chmod -R 777 /tmp_out/bin"
+	/bin/bash -c "
+cp -r /PETUUM/bosen/app/mlr/bin /tmp_out; chmod -R 777 /tmp_out/bin; 
+cp -r /PETUUM/bosen/app/mlr/datasets /tmp_out; chmod -R 777 /tmp_out/datasets; 
+"
 
-    cp -a "${HERE}/tmp_out/bin/mlr_main" "${tmp_root}/home/dip/bin"
+    cp "${HERE}/tmp_out/bin/mlr_main" "${tmp_root}/home/dip/bin"
     chmod 755 "${tmp_root}/home/dip/bin/mlr_main"
 
+    mkdir -p "${tmp_root}/home/dip/datasets"
+    cp \
+	"${HERE}/tmp_out/datasets/covtype.scale.test.small" \
+	"${HERE}/tmp_out/datasets/covtype.scale.test.small.meta" \
+	"${HERE}/tmp_out/datasets/covtype.scale.train.small" \
+	"${HERE}/tmp_out/datasets/covtype.scale.train.small.meta" \
+	\
+	"${tmp_root}/home/dip/datasets"
+    chmod 555 "${tmp_root}/home/dip/datasets/"*
+
+exit 1
     rm -rf ${HERE}/tmp_out
 )
 
-mkdir -p "${tmp_root}/home/dip/datasets"
-cp -a \
-    "${MLR_ROOT_DIR}/datasets/covtype.scale.test.small" \
-    "${MLR_ROOT_DIR}/datasets/covtype.scale.test.small.meta" \
-    "${MLR_ROOT_DIR}/datasets/covtype.scale.train.small" \
-    "${MLR_ROOT_DIR}/datasets/covtype.scale.train.small.meta" \
-    "${tmp_root}/home/dip/datasets"
 
 cp -a \
     "${HERE}/mlrWrapper.sh" \
