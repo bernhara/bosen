@@ -146,10 +146,13 @@ _next_O4H_quote ()
 {
     previous_score="$1"
 
-    delta_to_max_score=$(( _max_int_score - previous_score ))
-    random_increment=$(( ( $RANDOM % delta_to_max_score ) / 10 ))
+    delta_to_max_score=$(( _max_int_score - previous_score))
+    random_increment=$(( $RANDOM % delta_to_max_score ))
+    reduced_increment=$(( random_increment / 2 ))
 
-    new_score=$(( previous_score - 50 + random_increment ))
+    random_decrement=$(( $RANDOM % 50 ))
+
+    new_score=$(( previous_score - random_decrement + reduced_increment ))
 
     echo "${new_score}"
 }
