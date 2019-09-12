@@ -75,7 +75,7 @@ RUN \
 COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
 
 #
-# Install use code
+# Install user code
 #
 COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
 
