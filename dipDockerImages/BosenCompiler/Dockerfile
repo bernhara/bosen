@@ -1,4 +1,4 @@
-# $Id: Dockerfile,v 1.1 2019/09/12 14:06:59 orba6563 Exp orba6563 $
+# -*- mode: indented-text -*-
 
 FROM debian:stretch-slim
 
