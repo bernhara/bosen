@@ -50,7 +50,6 @@ cp -r /PETUUM/bosen/app/mlr/datasets /tmp_out; chmod -R 777 /tmp_out/datasets;
 	"${tmp_root}/home/dip/datasets"
     chmod 555 "${tmp_root}/home/dip/datasets/"*
 
-exit 1
     rm -rf ${HERE}/tmp_out
 )
 
