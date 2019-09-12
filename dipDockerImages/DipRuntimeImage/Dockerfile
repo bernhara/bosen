@@ -41,7 +41,6 @@ RUN \
     apt-get clean && \
     rm -rf /tmp/* && \
     rm -f /core
-# -*- mode: indented-text -*-
 
 # mandatory for pip
 ENV LC_ALL=en_US.utf8 LANG=en_US.utf8
