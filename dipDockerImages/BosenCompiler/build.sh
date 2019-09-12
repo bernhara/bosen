@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# $Id: $
+# FIXME: minimal version
 
 HERE=$( dirname "$0" )
 ABS_HERE=$( readlink -f "${HERE}" )
