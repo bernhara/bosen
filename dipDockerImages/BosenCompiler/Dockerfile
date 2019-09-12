@@ -42,8 +42,12 @@ RUN \
 	    make
 	    
 RUN \
-    cd /PETUUM && \
-    git clone -b log-minibatch-data https://github.com/bernhara/bosen.git
+    ls -l /PETUUM
+
+COPY tmp_root/ /PETUUM/
+
+RUN \
+    ls -l /PETUUM
 
 RUN \
     cd /PETUUM/bosen && \
