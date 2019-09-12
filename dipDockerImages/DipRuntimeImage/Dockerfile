@@ -76,7 +76,17 @@ COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
 
 #
 # Install user code
+# =================
 #
+RUN \
+    apt-get update && \
+    apt-get install -y  \
+    	    curl \
+    && \
+    apt-get clean && \
+    rm -rf /tmp/* && \
+    rm -f /core
+
 COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
 
 # copy binary files
