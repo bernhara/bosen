@@ -21,7 +21,24 @@ fi
 rm -rf "${tmp_root}"
 mkdir -p "${tmp_root}/home/dip"
 mkdir -p "${tmp_root}/home/dip/bin"
-cp -a "${MLR_ROOT_DIR}/bin/mlr_main" "${tmp_root}/home/dip/bin"
+
+
+(
+    ABS_HERE=$( readlink -f "${HERE}" )
+
+    rm -rf ${HERE}/tmp_out
+    mkdir ${HERE}/tmp_out
+    docker run \
+	--rm \
+	-v ${ABS_HERE}/tmp_out:/tmp_out \
+	"dip_bosen_compiler:latest" \
+	/bin/bash -c "cp -r /PETUUM/bosen/app/mlr/bin /tmp_out; chmod -R 777 /tmp_out/bin"
+
+    cp -a "${HERE}/tmp_out/bin/mlr_main" "${tmp_root}/home/dip/bin"
+    chmod 755 "${tmp_root}/home/dip/bin/mlr_main"
+
+    rm -rf ${HERE}/tmp_out
+)
 
 mkdir -p "${tmp_root}/home/dip/datasets"
 cp -a \
@@ -63,8 +80,6 @@ done
 #
 # remove __pycache__
 #
-
-set -x
 
 for d in $( find "${tmp_root}" -type d -a -name __pycache__ -print )
 do
@@ -135,23 +150,23 @@ done
 # generate Dockerfile
 #
 
-docker_file_components=$(
-    (
-	ls -1 ${HERE}/*-Dockerfile.${architecture}
-	ls -1 ${HERE}/*-Dockerfile.noarch
-    ) | \
-	sort -n
-)
-
-for i in ${docker_file_components}
-do
-    cat $i
-done > "${HERE}/Dockerfile-merged.tmp"
+#!!!docker_file_components=$(
+#!!!    (
+#!!!	ls -1 ${HERE}/*-Dockerfile.${architecture}
+#!!!	ls -1 ${HERE}/*-Dockerfile.noarch
+#!!!    ) | \
+#!!!	sort -n
+#!!!)
+#!!!
+#!!!for i in ${docker_file_components}
+#!!!do
+#!!!    cat $i
+#!!!done > "${HERE}/Dockerfile-merged.tmp"
 
 docker build  \
     --force-rm \
     --pull \
     -t "${image_name}:${image_tag}" \
     ${build_arg_switch_list} \
-    --file "${HERE}/Dockerfile-merged.tmp" \
+    --file "${HERE}/Dockerfile" \
     ${HERE}
