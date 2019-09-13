@@ -13,6 +13,24 @@ RUN \
     rm -f /core
 
 
+#
+# Additional system utilies
+#
+RUN \
+    apt-get update && \
+    apt-get install -y  \
+            curl \
+            dnsutils \
+            inetutils-ping \
+    && \
+    apt-get clean && \
+    rm -rf /tmp/* && \
+    rm -f /core
+
+
+#
+# Bosen runtime requirements
+#
 RUN \
     apt-get update && \
     apt-get install -y  \
@@ -78,15 +96,6 @@ COPY tmp_root/home/dip/datasets/ /home/dip/datasets/
 # Install user code
 # =================
 #
-RUN \
-    apt-get update && \
-    apt-get install -y  \
-    	    curl \
-    && \
-    apt-get clean && \
-    rm -rf /tmp/* && \
-    rm -f /core
-
 COPY tmp_root/home/dip/bin/misc/pushToElastic /home/dip/bin/misc/pushToElastic/
 
 # copy binary files
