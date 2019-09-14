@@ -3,8 +3,6 @@
 HERE=`dirname $0`
 CMD=`basename $0`
 
-set -x
-
 ARGarray=( "$@" )
 
 if [ -r "${HERE}/${CMD}-config" ]
@@ -182,10 +180,8 @@ do
 
     for i in $(seq ${MAX_TEST_FOR_FOREIGN_WORKER_HOSTNAME_TO_COME_UP})
     do
-	nslookup ${worker_hostname}
-	cat /etc/resolv.conf
-	ping -c 3 ${worker_hostname}
-	if ping -w 1 -c 1 ${worker_hostname} >/dev/null 2>/dev/null
+
+	if ping -w 1 -c 1 ${worker_hostname}
 	then
 	    # hostname ${worker_hostname} is a valid hostname AND it is up
 	    echo "INFO: peer ${worker_hostname} is up and reachable" 1>&2
